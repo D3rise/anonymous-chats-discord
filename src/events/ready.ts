@@ -78,13 +78,13 @@ class ReadyListener extends Listener {
       });
     }, 15000);
 
-    if (process.env.SDC_TOKEN) {
-      const sdcClient = new SDC(process.env.SDC_TOKEN);
-      sdcClient.setAutoPost(this.client.user.id, {
-        servers: this.client.guilds.size,
-        shards: this.client.shard.count
-      });
-    }
+    // if (process.env.SDC_TOKEN) {
+    //   const sdcClient = new SDC(process.env.SDC_TOKEN);
+    //   sdcClient.setAutoPost(this.client.user.id, {
+    //     servers: this.client.guilds.size,
+    //     shards: this.client.shard.count
+    //   });
+    // }
   }
 }
 
