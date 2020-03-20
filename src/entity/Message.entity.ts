@@ -31,7 +31,7 @@ export class Message {
   @Column({ nullable: true })
   content: string;
 
-  @Column("array", { default: [], nullable: true })
+  @Column("simple-array", { default: [], nullable: true })
   attachmentUris: string[];
 
   @Column({ default: new Date() })
