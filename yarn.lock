@@ -1270,8 +1270,8 @@ sax@>=0.6.0:
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
 
 "sdc-type@github:sqdshcom/sdc-type":
-  version "1.0.0"
-  resolved "https://codeload.github.com/sqdshcom/sdc-type/tar.gz/e1c949bf322c24ac38e5d4e07c5937dfa41bb76e"
+  version "1.0.1"
+  resolved "https://codeload.github.com/sqdshcom/sdc-type/tar.gz/8a13bcfbdc7b291354a5771c04d0e82e5b0f4e01"
   dependencies:
     "@types/node" "^13.9.1"
     axios "^0.19.2"
