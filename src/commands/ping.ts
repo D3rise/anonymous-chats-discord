@@ -11,6 +11,7 @@ class PingCommand extends Command {
   }
 
   async exec(message: Message) {
+<<<<<<< HEAD
     const sent = await message.reply("секундочку...");
     const timeDiff = sent.createdAt.getTime() - message.createdAt.getTime();
     return message.channel.send(
@@ -19,6 +20,18 @@ class PingCommand extends Command {
           this.client.ws.ping
         )} ms`
     );
+=======
+    const sent = await message.util.reply("секундочку...");
+    const timeDiff =
+      (sent.editedAt.getTime() || sent.createdAt.getTime()) -
+      (message.editedAt.getTime() || message.createdAt.getTime());
+    return message.util.reply([
+      `🔂 **Время на отправку сообщения**: ${timeDiff} ms`,
+      `💟 **Скорость ответа от Discord API**: ${Math.round(
+        this.client.ws.ping
+      )} ms`
+    ]);
+>>>>>>> parent of 234d6f7... Фикс бага с командой пинга
   }
 }
 
