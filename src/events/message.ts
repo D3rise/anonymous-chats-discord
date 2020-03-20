@@ -27,6 +27,7 @@ class MessageListener extends Listener {
   }
 
   async exec(message: Message) {
+    if (message.author.bot) return;
     if (message.guild !== null) return;
     if (message.content.startsWith("!")) return;
 
