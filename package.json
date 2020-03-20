@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "prod": "node dist/shardingManager.js",
+    "start": "node dist/shardingManager.js",
     "dev": "ts-nodemon"
   },
   "dependencies": {
