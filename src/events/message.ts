@@ -59,20 +59,22 @@ class MessageListener extends Listener {
           relations: ["messages"]
         });
 
+        const attachments = message.attachments.array();
+        let attachmentUris: string[] = [];
+        if (attachments.length !== 0) {
+          attachments.forEach(attachment => {
+            attachmentUris.push(attachment.proxyURL);
+          });
+        }
+
         chat.last_message_date = new Date();
         let messageRecord = await this.messageRepository.create({
           discord_author_id: message.author.id,
           discord_id: message.id,
           sent_id: msg.id,
-          content: message.content
+          content: message.content,
+          attachmentUris
         });
-
-        const attachments = message.attachments.array();
-        if (attachments.length !== 0) {
-          attachments.forEach(attachment => {
-            messageRecord.attachmentUris.push(attachment.proxyURL);
-          });
-        }
 
         user.messages.push(messageRecord);
         chat.messages.push(messageRecord);
