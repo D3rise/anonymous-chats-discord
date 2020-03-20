@@ -11,7 +11,7 @@ class PingCommand extends Command {
   }
 
   async exec(message: Message) {
-    const sent = await message.util.reply("секундочку...");
+    const sent = await message.reply("секундочку...");
     const timeDiff =
       (sent.editedAt.getTime() || sent.createdAt.getTime()) -
       (message.editedAt.getTime() || message.createdAt.getTime());
