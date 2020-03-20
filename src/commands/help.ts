@@ -1,16 +1,17 @@
 import Command from "../struct/Command";
 import { Message, MessageEmbed } from "discord.js";
+import i18n, { __ } from "i18n";
 
 class HelpCommand extends Command {
   constructor() {
     super("помощь", {
-      aliases: ["помощь", "команды", "h", "help", "commands"],
-      category: "Бот",
-      description: "Получить список команд бота",
+      aliases: [__("помощь"), __("команды"), __("help"), __("commands")],
+      category: __("Бот"),
+      description: __("Получить список команд бота"),
       args: [
         {
           id: "command",
-          description: "Команда, по которой нужно узнать помощь"
+          description: __("Команда, по которой нужно узнать помощь")
         }
       ]
     });
@@ -31,7 +32,9 @@ class HelpCommand extends Command {
       let cmds = 0;
       let embed = new MessageEmbed();
       embed.setDescription(
-        "Команды, которые начинаются с префикса `!` могут быть использованы только в личных сообщениях."
+        __(
+          "Команды, которые начинаются с префикса `!` могут быть использованы только в личных сообщениях."
+        )
       );
       embed.setAuthor("Список команд", this.client.user.displayAvatarURL());
 
@@ -47,7 +50,9 @@ class HelpCommand extends Command {
         temp = "";
       });
 
-      embed.setFooter(`Количество команд: ${cmds}`);
+      embed.setFooter(
+        __(`Количество команд: {{cmds}}`, { cmds: String(cmds) })
+      );
       message.channel.send(embed);
     }
   }

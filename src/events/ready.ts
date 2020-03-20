@@ -5,6 +5,7 @@ import { User } from "../entity/User.entity";
 import { Chat } from "../entity/Chat.entity";
 import { Search } from "../entity/Search.entity";
 import { SDC } from "sdc-type";
+import i18n from "i18n";
 
 class ReadyListener extends Listener {
   guildRepository: Repository<Guild>;
@@ -73,7 +74,10 @@ class ReadyListener extends Listener {
 
     setInterval(() => {
       this.client.user.setActivity({
-        name: `${this.client.guilds.size} серверов | ${prefix}help`,
+        name: i18n.__(`{{guilds}} серверов / {{prefix}}help`, {
+          guilds: String(this.client.guilds.size),
+          prefix
+        }),
         type: "WATCHING"
       });
     }, 15000);

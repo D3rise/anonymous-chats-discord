@@ -3,13 +3,14 @@ import moment from "moment-timezone";
 import momentDurationFormat from "moment-duration-format";
 import { Message, MessageEmbed, MessageEmbedOptions } from "discord.js";
 momentDurationFormat(require("moment-timezone"));
+import { __ } from "i18n";
 
 class SearchCommand extends Command {
   constructor() {
     super("поиск", {
-      aliases: ["поиск", "search"],
-      category: "Чат",
-      description: "Начать поиск собеседника"
+      aliases: [__("поиск"), __("search")],
+      category: __("Чат"),
+      description: __("Начать поиск собеседника")
     });
   }
 
@@ -17,14 +18,14 @@ class SearchCommand extends Command {
     const handleMessageError = () =>
       message.channel.send(
         this.client.errorEmbed(
-          "К сожалению, бот не может отправить вам сообщение.\n" +
-            "Проверьте свои настройки конфиденциальности."
+          __("К сожалению, бот не может отправить вам сообщение.\n") +
+            __("Проверьте свои настройки конфиденциальности.")
         )
       );
 
     if (message.guild !== null)
       message.delete({
-        reason: "Команда поиска собеседника"
+        reason: __("Команда поиска собеседника")
       });
 
     const chat = await this.chatRepository.findOne({
@@ -35,7 +36,7 @@ class SearchCommand extends Command {
     });
     if (chat)
       return message.author
-        .send(this.client.errorEmbed("Вы уже находитесь в чате!"))
+        .send(this.client.errorEmbed(__("Вы уже находитесь в чате!")))
         .catch(handleMessageError);
 
     let userSearchRecord = await this.searchRepository.findOne({
@@ -49,9 +50,14 @@ class SearchCommand extends Command {
       return message.author
         .send(
           this.client.errorEmbed(
-            `Поиск собеседника был отменен.\nВремя ожидания: ${moment
-              .duration(diff, "milliseconds")
-              .format("HH часов, mm минут, ss секунд")}`
+            __(
+              `Поиск собеседника был отменен.\nВремя ожидания: {{waitingTime}}`,
+              {
+                waitingTime: moment
+                  .duration(diff, "milliseconds")
+                  .format(__("HH часов, mm минут, ss секунд"))
+              }
+            )
           )
         )
         .catch(handleMessageError);

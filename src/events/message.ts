@@ -5,6 +5,7 @@ import { Message as MessageEntity } from "../entity/Message.entity";
 import { Repository, getRepository } from "typeorm";
 import { User } from "../entity/User.entity";
 import config from "../config.json";
+import i18n from "i18n";
 
 class MessageListener extends Listener {
   chatRepository: Repository<Chat>;
@@ -29,7 +30,11 @@ class MessageListener extends Listener {
   async exec(message: Message) {
     if (message.author.bot) return;
     if (message.guild !== null) return;
-    if (message.content.startsWith("!")) return;
+    if (
+      message.content.startsWith("!") ||
+      message.content.startsWith(this.client.options.defaultPrefix)
+    )
+      return;
 
     const chat = await this.chatRepository.findOne({
       where: [
@@ -42,7 +47,7 @@ class MessageListener extends Listener {
 
     if (this.urlRegexp.test(message.content))
       return message.channel.send(
-        this.client.errorEmbed("В чате нельзя отправлять ссылки!")
+        this.client.errorEmbed(i18n.__("В чате нельзя отправлять ссылки!"))
       );
 
     const recipientId =

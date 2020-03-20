@@ -3,6 +3,7 @@ import { User, MessageEmbed } from "discord.js";
 import { Search } from "../entity/Search.entity";
 import { Chat } from "../entity/Chat.entity";
 import { getRepository, Repository, Not } from "typeorm";
+import i18n from "i18n";
 
 class SearchStartedListener extends Listener {
   searchRepository: Repository<Search>;
@@ -38,15 +39,17 @@ class SearchStartedListener extends Listener {
       await this.chatRepository.save(chat);
 
       const notificationEmbed = this.client.successEmbed(
-        "**Собеседник найден!**\n\n" +
-          "Правила чата:\n" +
-          "```1. Не злоупотребляйте нецензурной лексикой\n" +
-          "2. Относитесь с должным уважением как к себе, так и к собеседнику```\n" +
-          "Системные уведомления отображаются в виде вставок (пример - то, что вы сейчас читаете)\n" +
-          "**Список команд доступных во время чата**:\n" +
-          "`!стоп` - остановить чат\n" +
-          "`!жалоба` - отправить жалобу на собеседника\n" +
-          "`!стоп-поиск` - остановить чат и начать поиск"
+        i18n.__(
+          "**Собеседник найден!**\n\n" +
+            "Правила чата:\n" +
+            "```1. Не злоупотребляйте нецензурной лексикой\n" +
+            "2. Относитесь с должным уважением как к себе, так и к собеседнику```\n" +
+            "Системные уведомления отображаются в виде вставок (пример - то, что вы сейчас читаете)\n" +
+            "**Список команд доступных во время чата**:\n" +
+            "`!стоп` - остановить чат\n" +
+            "`!жалоба` - отправить жалобу на собеседника\n" +
+            "`!стоп-поиск` - остановить чат и начать поиск"
+        )
       );
 
       this.client.users

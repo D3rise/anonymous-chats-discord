@@ -2,6 +2,7 @@ import Listener from "../struct/Listener";
 import { getRepository, Repository } from "typeorm";
 import { Message } from "discord.js";
 import { Message as MessageEntity } from "../entity/Message.entity";
+import i18n from "i18n";
 
 class MessageUpdateListener extends Listener {
   messageRepository: Repository<MessageEntity>;
@@ -30,6 +31,11 @@ class MessageUpdateListener extends Listener {
 
     if (messageRecord !== undefined && messageRecord.chat.ended_at === null) {
       let chat = messageRecord.chat;
+
+      if (this.urlRegexp.test(newMessage.content))
+        return newMessage.channel.send(
+          this.client.errorEmbed(i18n.__("В чате нельзя отправлять ссылки!"))
+        );
 
       let recipientId =
         chat.user1_id === oldMessage.author.id ? chat.user2_id : chat.user1_id;

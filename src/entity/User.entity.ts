@@ -12,11 +12,8 @@ export class User {
   @Column({ unique: true })
   user_id: string;
 
-  @Column({ default: false })
-  premium: boolean;
-
-  @Column({ default: "unspecified", enum: genderEnum })
-  prefer_gender: string;
+  @Column("simple-json", { default: {} })
+  config: { preferedGender: string; gender: string; age: number };
 
   @Column({ default: "unspecified", enum: genderEnum })
   gender: string;

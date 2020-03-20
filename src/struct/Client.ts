@@ -20,13 +20,13 @@ import path from "path";
 import dotenv from "dotenv";
 import log4js from "log4js";
 import { Chat } from "../entity/Chat.entity";
-import config from "../config.json";
-import CustomUtil from "./Util";
+import * as config from "../config.json";
+import i18n, { __ } from "i18n";
 dotenv.config();
 
 interface ICustomClientOptions {
   defaultPrefix: string;
-  contactServerInvite: string;
+  contactServerInvite?: string;
 }
 
 class CustomClient extends AkairoClient {
@@ -35,7 +35,6 @@ class CustomClient extends AkairoClient {
   public logger: log4js.Logger;
   public db: Connection;
   public contactServerInvite: string;
-  public customUtil: CustomUtil;
 
   public commandHandler: CommandHandler;
   private listenerHandler: ListenerHandler;
@@ -55,7 +54,17 @@ class CustomClient extends AkairoClient {
         default: { appenders: ["out"], level: "debug" }
       }
     });
-    this.contactServerInvite = options.contactServerInvite;
+    this.contactServerInvite =
+      process.env.LOCALE === "ru"
+        ? config.contactServerInviteRu
+        : config.contactServerInviteEn;
+
+    i18n.configure({
+      directory: path.join(__dirname, "..", "..", "lang"),
+      defaultLocale: process.env.LOCALE,
+      locales: ["ru", "en"],
+      register: global
+    });
 
     this.logger = log4js.getLogger(
       `Shard ${this.shard.ids[0] + 1}/${this.shard.count}`
@@ -66,7 +75,10 @@ class CustomClient extends AkairoClient {
   private async init() {
     this.db = await createConnection({
       type: "postgres",
-      url: process.env.POSTGRES_URL,
+      url:
+        process.env.LOCALE === "ru"
+          ? process.env.POSTGRES_URL
+          : process.env.POSTGRES_URL_EN,
       entities: [path.join(__dirname, "..", "entity", "*.entity.{ts,js}")],
       namingStrategy: new SnakeNamingStrategy()
     });
@@ -86,7 +98,7 @@ class CustomClient extends AkairoClient {
         const users = [chat.user1_id, chat.user2_id];
         users.forEach(async userId => {
           const embed = this.errorEmbed(
-            "Чат был окончен из-за отсутствия активности в течении 5 минут."
+            __("Чат был окончен из-за отсутствия активности в течении 5 минут.")
           );
           const user = await this.users.fetch(userId);
           user.send(embed);
@@ -124,8 +136,6 @@ class CustomClient extends AkairoClient {
     this.inhibitorHandler.loadAll();
     this.listenerHandler.loadAll();
     this.commandHandler.loadAll();
-
-    this.customUtil = new CustomUtil(this);
   }
 
   public embed(data: string | MessageEmbedOptions) {

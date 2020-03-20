@@ -3,6 +3,7 @@ import { Message } from "discord.js";
 import { Message as MessageEntity } from "../entity/Message.entity";
 import { Repository, getRepository } from "typeorm";
 import { Chat } from "../entity/Chat.entity";
+import i18n from "i18n";
 
 class MessageDeleteListener extends Listener {
   chatRepository: Repository<Chat>;

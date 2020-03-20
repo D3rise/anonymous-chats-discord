@@ -1,7 +1,8 @@
 {
   "ownerId": "253913831896645632",
   "defaultPrefix": "n!",
-  "contactServerInvite": "https://discord.gg/c9j8JR",
+  "contactServerInviteRu": "https://discord.gg/c9j8JR",
+  "contactServerInviteEn": "",
   "contactServerId": "690456206548008970",
   "searchCountChannelId": "690459833685770290",
   "searchCountText": "В поиске: ",

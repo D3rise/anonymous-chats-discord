@@ -2,6 +2,7 @@ import Listener from "../struct/Listener";
 import { User } from "../entity/User.entity";
 import { GuildMember } from "discord.js";
 import { Repository, getRepository } from "typeorm";
+import i18n from "i18n";
 
 class GuildMemberAddListener extends Listener {
   userRepository: Repository<User>;

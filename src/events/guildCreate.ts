@@ -3,6 +3,7 @@ import { Guild } from "discord.js";
 import { Repository, getRepository } from "typeorm";
 import { Guild as GuildEntity } from "../entity/Guild.entity";
 import { User } from "../entity/User.entity";
+import i18n from "i18n";
 
 class GuildCreateListener extends Listener {
   guildRepository: Repository<GuildEntity>;

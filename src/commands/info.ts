@@ -1,12 +1,19 @@
 import Command from "../struct/Command";
 import { MessageEmbed, Message } from "discord.js";
+import i18n, { __ } from "i18n";
 
 class InfoCommand extends Command {
   constructor() {
     super("info", {
-      aliases: ["инфо", "информация", "статистика", "статы", "stats"],
-      category: "Бот",
-      description: "Получить информацию о боте"
+      aliases: [
+        __("инфо"),
+        __("информация"),
+        __("статистика"),
+        __("статы"),
+        __("stats")
+      ],
+      category: __("Бот"),
+      description: __("Получить информацию о боте")
     });
   }
 
@@ -15,19 +22,22 @@ class InfoCommand extends Command {
 
     return message.channel.send(
       new MessageEmbed()
-        .setAuthor("Статистика", this.client.user.displayAvatarURL())
-        .addField("> Пользователи", this.client.users.size, true)
-        .addField("> Сервера", this.client.guilds.size, true)
-        .addField("> Диалоги", await this.chatRepository.count(), true)
-        .addField("> Диалоги в данный момент", dialogueCount.length, true)
+        .setAuthor(__("Статистика"), this.client.user.displayAvatarURL())
+        .addField(__("> Пользователи"), this.client.users.size, true)
+        .addField(__("> Сервера"), this.client.guilds.size, true)
+        .addField(__("> Диалоги"), await this.chatRepository.count(), true)
+        .addField(__("> Диалоги в данный момент"), dialogueCount.length, true)
         .addField(
-          "> Собеседники в данный момент",
+          __("> Собеседники в данный момент"),
           dialogueCount.length / 2,
           true
         )
-        .addField("> Текущий шард", this.client.shard.ids[0], true)
+        .addField(__("> Текущий шард"), this.client.shard.ids[0], true)
         .setDescription(
-          `[Пригласить меня на свой сервер](https://discordapp.com/api/oauth2/authorize?client_id=${this.client.user.id}&permissions=388160&scope=bot)`
+          __(
+            `[Пригласить меня на свой сервер](https://discordapp.com/api/oauth2/authorize?client_id={{botId}}&permissions=388160&scope=bot)`,
+            { botId: this.client.user.id }
+          )
         )
     );
   }

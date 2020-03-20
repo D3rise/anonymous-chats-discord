@@ -1,14 +1,15 @@
 import Command from "../struct/Command";
 import { Message } from "discord.js";
 import { User } from "../entity/User.entity";
+import { __ } from "i18n";
 
 class ReportCommand extends Command {
   constructor() {
     super("report", {
-      aliases: ["жалоба", "репорт", "report"],
+      aliases: [__("жалоба"), __("репорт"), __("report")],
       prefix: "!",
-      description: "Отправить жалобу на собеседника",
-      category: "Чат",
+      description: __("Отправить жалобу на собеседника"),
+      category: __("Чат"),
       channel: "dm"
     });
   }
@@ -23,7 +24,7 @@ class ReportCommand extends Command {
 
     if (!chat)
       return message.channel.send(
-        this.client.errorEmbed("Вы не находитесь в чате!")
+        this.client.errorEmbed(__("Вы не находитесь в чате!"))
       );
 
     const reportedUser = await this.userRepository.findOne({
@@ -40,7 +41,7 @@ class ReportCommand extends Command {
     });
     if (reportInChat) {
       return message.channel.send(
-        this.client.errorEmbed("Вы уже отправляли жалобу в этом чате!")
+        this.client.errorEmbed(__("Вы уже отправляли жалобу в этом чате!"))
       );
     }
 
@@ -54,9 +55,11 @@ class ReportCommand extends Command {
 
     message.channel.send(
       this.client.successEmbed(
-        "**Жалоба была успешно отправлена!**\n" +
-          "Имейте ввиду, что за жалобу без уважительных на\n" +
-          "то причин вам будет выдано предупреждение."
+        __("**Жалоба была успешно отправлена!**\n") +
+          __(
+            "Имейте ввиду, что за жалобу без уважительных на\n" +
+              "то причин вам будет выдано предупреждение."
+          )
       )
     );
 
@@ -66,7 +69,7 @@ class ReportCommand extends Command {
       await this.chatRepository.save(chat);
 
       message.channel.send(
-        this.client.errorEmbed("Собеседник был заблокирован.\nЧат окончен.")
+        this.client.errorEmbed(__("Собеседник был заблокирован.\nЧат окончен."))
       );
 
       const reportedUserDiscord = await this.client.users.fetch(
@@ -75,10 +78,13 @@ class ReportCommand extends Command {
 
       reportedUserDiscord.send(
         this.client.errorEmbed(
-          "К сожалению, вы были заблокированы.\n" +
-            "Чтобы подать заявку на разблокировку аккаунта, " +
-            `напишите администрации на [этом](${this.client.contactServerInvite}) ` +
-            "сервере, почему по вашему мнению блокировка безосновательна."
+          __("К сожалению, вы были заблокированы.\n") +
+            __(
+              "Чтобы подать заявку на разблокировку аккаунта, " +
+                `напишите администрации на [этом]({{contactServerInvite}}) ` +
+                "сервере, почему по вашему мнению блокировка безосновательна.",
+              { contactServerInvite: this.client.contactServerInvite }
+            )
         )
       );
     }

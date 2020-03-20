@@ -1,16 +1,17 @@
 import Command from "../struct/Command";
 import { Message } from "discord.js";
+import i18n, { __ } from "i18n";
 
 class PrefixCommand extends Command {
   constructor() {
     super("prefix", {
-      aliases: ["prefix"],
-      category: "Бот",
-      description: "Изменить префикс бота на вашем сервере",
+      aliases: [__("prefix")],
+      category: __("Бот"),
+      description: __("Изменить префикс бота на вашем сервере"),
       args: [
         {
           id: "newPrefix",
-          description: "Новый префикс"
+          description: __("Новый префикс")
         }
       ],
       channel: "guild"
@@ -25,7 +26,7 @@ class PrefixCommand extends Command {
     if (args.newPrefix) {
       if (!message.member.hasPermission("MANAGE_GUILD")) {
         return message.channel.send(
-          this.client.errorEmbed("Недостаточно разрешений!")
+          this.client.errorEmbed(__("Недостаточно разрешений!"))
         );
       }
 
@@ -35,14 +36,18 @@ class PrefixCommand extends Command {
 
       return message.channel.send(
         this.client.successEmbed(
-          `Новый префикс бота на этом сервере: \`${guildRecord.prefix}\``
+          __(`Новый префикс бота на этом сервере: \`{{newPrefix}}\``, {
+            newPrefix: guildRecord.prefix
+          })
         )
       );
     }
 
     message.channel.send(
       this.client.embed(
-        `Текущий префикс на этом сервере: \`${guildRecord.prefix}\``
+        __(`Текущий префикс на этом сервере: \`{{newPrefix}}\``, {
+          newPrefix: guildRecord.prefix
+        })
       )
     );
   }

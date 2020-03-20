@@ -4,8 +4,7 @@ import "reflect-metadata";
 
 const bot = new Client({
   ownerID: config.ownerId,
-  defaultPrefix: config.defaultPrefix,
-  contactServerInvite: config.contactServerInvite
+  defaultPrefix: config.defaultPrefix
 });
 bot.login(process.env.TOKEN);
 
