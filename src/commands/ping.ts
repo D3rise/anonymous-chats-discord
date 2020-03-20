@@ -15,12 +15,12 @@ class PingCommand extends Command {
     const timeDiff =
       (sent.editedAt.getTime() || sent.createdAt.getTime()) -
       (message.editedAt.getTime() || message.createdAt.getTime());
-    return message.util.reply([
-      `🔂 **Время на отправку сообщения**: ${timeDiff} ms`,
-      `💟 **Скорость ответа от Discord API**: ${Math.round(
-        this.client.ws.ping
-      )} ms`
-    ]);
+    return message.channel.send(
+      `🔂 **Время на отправку сообщения**: ${timeDiff} ms\n` +
+        `💟 **Скорость ответа от Discord API**: ${Math.round(
+          this.client.ws.ping
+        )} ms`
+    );
   }
 }
 
