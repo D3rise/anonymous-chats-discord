@@ -1,0 +1,36 @@
+{
+  "name": "anonymous-chat",
+  "version": "0.1",
+  "main": "dist/shardingManager.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "prod": "node dist/shardingManager.js",
+    "dev": "ts-nodemon"
+  },
+  "dependencies": {
+    "@types/i18n": "^0.8.6",
+    "@types/moment-duration-format": "^2.2.2",
+    "@types/moment-timezone": "^0.5.12",
+    "@types/mongoose": "^5.7.3",
+    "@types/node": "^13.7.7",
+    "@types/ws": "^7.2.2",
+    "discord-akairo": "^8.0.0",
+    "discord.js": "github:some-packages/discord.js",
+    "dotenv": "^8.2.0",
+    "log4js": "^6.1.2",
+    "moment": "^2.24.0",
+    "moment-duration-format": "^2.3.2",
+    "moment-timezone": "^0.5.28",
+    "pg": "^7.18.2",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.24",
+    "typeorm-naming-strategies": "^1.1.0"
+  },
+  "devDependencies": {
+    "@trongnd/ts-nodemon": "^1.0.3",
+    "nodemon": "^2.0.2",
+    "tsc": "^1.20150623.0",
+    "typescript": "^3.8.3"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "ownerId": "253913831896645632",
+  "defaultPrefix": "n!",
+  "contactServerInvite": "https://discord.gg/c9j8JR",
+  "contactServerId": "690456206548008970",
+  "searchCountChannelId": "690459833685770290",
+  "searchCountText": "В поиске: ",
+  "chatsCountChannelId": "690459885334167562",
+  "chatsCountText": "Чаты: ",
+  "messagesCountChannelId": "690467612303294494",
+  "messagesCountText": "Сообщения: "
+}
