@@ -27,3 +27,5 @@ class GuildMemberAddListener extends Listener {
     });
   }
 }
+
+export default GuildMemberAddListener;
