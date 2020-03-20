@@ -24,6 +24,7 @@
     "moment-timezone": "^0.5.28",
     "pg": "^7.18.2",
     "reflect-metadata": "^0.1.13",
+    "sdc-type": "github:sqdshcom/sdc-type",
     "typeorm": "^0.2.24",
     "typeorm-naming-strategies": "^1.1.0"
   },

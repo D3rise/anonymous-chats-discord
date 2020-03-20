@@ -67,9 +67,11 @@ class MessageListener extends Listener {
         });
 
         const attachments = message.attachments.array();
-        attachments.forEach(attachment => {
-          messageRecord.attachmentUris.push(attachment.proxyURL);
-        });
+        if (attachments.length !== 0) {
+          attachments.forEach(attachment => {
+            messageRecord.attachmentUris.push(attachment.proxyURL);
+          });
+        }
 
         user.messages.push(messageRecord);
         chat.messages.push(messageRecord);

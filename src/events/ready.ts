@@ -4,6 +4,7 @@ import { Repository, getRepository } from "typeorm";
 import { User } from "../entity/User.entity";
 import { Chat } from "../entity/Chat.entity";
 import { Search } from "../entity/Search.entity";
+import { SDC } from "sdc-type";
 
 class ReadyListener extends Listener {
   guildRepository: Repository<Guild>;
@@ -53,6 +54,7 @@ class ReadyListener extends Listener {
     });
 
     const prefix = this.client.options.defaultPrefix;
+    /*
     const activities = [
       {
         name: `${this.client.guilds.size} серверов | ${prefix}help`,
@@ -66,7 +68,8 @@ class ReadyListener extends Listener {
         name: `${this.client.channels.size} каналов | ${prefix}help`,
         type: "WATCHING"
       }
-    ];
+    ]; 
+    */
 
     setInterval(() => {
       this.client.user.setActivity({
@@ -74,6 +77,14 @@ class ReadyListener extends Listener {
         type: "WATCHING"
       });
     }, 15000);
+
+    if (process.env.SDC_TOKEN) {
+      const sdcClient = new SDC(process.env.SDC_TOKEN);
+      sdcClient.setAutoPost(this.client.user.id, {
+        servers: this.client.guilds.size,
+        shards: this.client.shard.count
+      });
+    }
   }
 }
 

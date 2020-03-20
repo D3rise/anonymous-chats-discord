@@ -19,6 +19,7 @@ class MessageDeleteListener extends Listener {
   }
 
   async exec(message: Message) {
+    if (message.author.bot) return;
     const discord_id = message.author.id;
     const chat = await this.chatRepository.findOne({
       where: [
