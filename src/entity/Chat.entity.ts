@@ -24,6 +24,9 @@ export class Chat {
   @Column({ type: "timestamp with time zone", nullable: true })
   ended_at: Date;
 
+  @Column()
+  locale: string;
+
   @Column({ type: "timestamp with time zone", nullable: true })
   last_message_date: Date;
 

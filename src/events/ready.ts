@@ -74,10 +74,16 @@ class ReadyListener extends Listener {
 
     setInterval(() => {
       this.client.user.setActivity({
-        name: i18n.__(`{{guilds}} серверов / {{prefix}}help`, {
-          guilds: String(this.client.guilds.size),
-          prefix
-        }),
+        name: i18n.__(
+          {
+            phrase: `other.botStatus`,
+            locale: this.client.options.defaultLocale
+          },
+          {
+            guilds: String(this.client.guilds.size),
+            prefix
+          }
+        ),
         type: "WATCHING"
       });
     }, 15000);

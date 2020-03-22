@@ -34,7 +34,7 @@ class MessageUpdateListener extends Listener {
 
       if (this.urlRegexp.test(newMessage.content))
         return newMessage.channel.send(
-          this.client.errorEmbed(i18n.__("В чате нельзя отправлять ссылки!"))
+          this.client.errorEmbed(i18n.__("errors.noLinksInTheChat"))
         );
 
       let recipientId =

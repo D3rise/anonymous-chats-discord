@@ -6,16 +6,11 @@ import i18n, { __ } from "i18n";
 class StopSearchCommand extends Command {
   constructor() {
     super("stop-search", {
-      aliases: [
-        __("стоп-поиск"),
-        __("споиск"),
-        __("конец-поиск"),
-        __("отмена-поиск")
-      ],
-      category: __("Чат"),
+      aliases: ["stop-search"],
+      category: "categories.chat",
       prefix: "!",
       channel: "dm",
-      description: __("Остановить текущий чат и начать поиск")
+      description: "commands.stopSearch.desc"
     });
   }
 
@@ -29,10 +24,12 @@ class StopSearchCommand extends Command {
 
     if (!chat)
       return message.channel.send(
-        this.client.errorEmbed(__("Вы не находитесь в чате!"))
+        this.client.errorEmbed(__("errors.youAreNotInTheChat"))
       );
 
-    const embed = this.client.successEmbed("Собеседник покинул чат.");
+    const embed = this.client.successEmbed(
+      __("commands.stop.broHasCancelledTheChat")
+    );
     if (chat.user1_id === message.author.id) {
       this.client.users.find(user => user.id === chat.user2_id).send(embed);
     } else {
@@ -42,24 +39,28 @@ class StopSearchCommand extends Command {
     chat.ended_at = new Date();
     await this.chatRepository.save(chat);
 
-    message.channel.send(this.client.successEmbed(__("Чат был окончен.")));
+    message.channel.send(
+      this.client.successEmbed(__("commands.stop.chatIsOver"))
+    );
 
     // SEARCH COMMAND //
     const handleMessageError = () =>
       message.channel.send(
-        this.client.errorEmbed(
-          __("К сожалению, бот не может отправить вам сообщение.\n") +
-            __("Проверьте свои настройки конфиденциальности.")
-        )
+        this.client.errorEmbed(__("errors.cantSendMessage"))
       );
 
     if (message.guild !== null)
       message.delete({
-        reason: __("Команда поиска собеседника")
+        reason: __("commands.search.reasonForMessageDelete")
       });
 
+    if (chat)
+      return message.author
+        .send(this.client.errorEmbed(__("errors.youAlreadyInTheChat")))
+        .catch(handleMessageError);
+
     let userSearchRecord = await this.searchRepository.findOne({
-      user_id: message.author.id
+      discord_user_id: message.author.id
     });
 
     if (userSearchRecord) {
@@ -69,10 +70,10 @@ class StopSearchCommand extends Command {
       return message.author
         .send(
           this.client.errorEmbed(
-            __(`Поиск собеседника был отменен.\nВремя ожидания: {{diff}}`, {
-              diff: moment
+            __(`commands.search.searchHasBeenCancelled`, {
+              waitingTime: moment
                 .duration(diff, "milliseconds")
-                .format(__("HH часов, mm минут, ss секунд"))
+                .format(__("other.timeFormat"))
             })
           )
         )
@@ -80,28 +81,28 @@ class StopSearchCommand extends Command {
     }
 
     userSearchRecord = this.searchRepository.create({
-      user_id: message.author.id,
-      started_at: new Date()
+      discord_user_id: message.author.id,
+      started_at: new Date(),
+      user: this.user
     });
     await this.searchRepository.save(userSearchRecord);
 
     message.author
       .send(
         this.client.successEmbed(
-          __("Поиск собеседника был начат.\n") +
-            __(
-              `На данный момент собеседника ищут: {{countOfSearches}} человек(а) не включая вас`,
-              {
-                countOfSearches: String(
-                  (await this.searchRepository.count()) - 1
-                )
-              }
-            )
+          __("commands.search.searchHasBeenStarted", {
+            count: String((await this.searchRepository.count()) - 1)
+          })
         )
       )
       .catch(handleMessageError);
 
-    this.client.emit("searchStarted", message.author, userSearchRecord);
+    this.client.emit(
+      "searchStarted",
+      message.author,
+      this.user,
+      userSearchRecord
+    );
   }
 }
 

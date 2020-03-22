@@ -1,5 +1,6 @@
 import Listener from "../struct/Listener";
 import { User, MessageEmbed } from "discord.js";
+import { User as UserEntity } from "../entity/User.entity";
 import { Search } from "../entity/Search.entity";
 import { Chat } from "../entity/Chat.entity";
 import { getRepository, Repository, Not } from "typeorm";
@@ -19,13 +20,27 @@ class SearchStartedListener extends Listener {
     this.chatRepository = getRepository(Chat);
   }
 
-  async exec(user: User, search: Search) {
-    const matchedSearch = await this.searchRepository.findOne({
-      where: { user_id: Not(user.id) },
-      order: {
-        started_at: -1
-      }
-    });
+  async exec(user: User, author: UserEntity, search: Search) {
+    const matchedSearch = await this.searchRepository
+      .createQueryBuilder("search")
+      .leftJoinAndSelect("search.user", "user")
+      .where("user.locale = :locale", { locale: author.locale })
+      .andWhere("search.discord_user_id != :userId", { userId: user.id })
+      .orderBy("search.started_at")
+      .getOne();
+
+    // findOne({
+    //   relations: ["user"],
+    //   where: {
+    //     discord_user_id: Not(user.id),
+    //     user: {
+    //       locale: author.locale
+    //     }
+    //   },
+    //   order: {
+    //     started_at: -1
+    //   }
+    // });
 
     // equivalent to matchedSearch !== null && matchedSearch !== undefined
     if (matchedSearch) {
@@ -33,27 +48,21 @@ class SearchStartedListener extends Listener {
       await this.searchRepository.delete(matchedSearch);
 
       const chat = this.chatRepository.create({
-        user1_id: search.user_id,
-        user2_id: matchedSearch.user_id
+        user1_id: search.discord_user_id,
+        user2_id: matchedSearch.discord_user_id,
+        locale: author.locale
       });
       await this.chatRepository.save(chat);
 
       const notificationEmbed = this.client.successEmbed(
-        i18n.__(
-          "**Собеседник найден!**\n\n" +
-            "Правила чата:\n" +
-            "```1. Не злоупотребляйте нецензурной лексикой\n" +
-            "2. Относитесь с должным уважением как к себе, так и к собеседнику```\n" +
-            "Системные уведомления отображаются в виде вставок (пример - то, что вы сейчас читаете)\n" +
-            "**Список команд доступных во время чата**:\n" +
-            "`!стоп` - остановить чат\n" +
-            "`!жалоба` - отправить жалобу на собеседника\n" +
-            "`!стоп-поиск` - остановить чат и начать поиск"
-        )
+        i18n.__({
+          phrase: "other.searchWasFoundReadTheRules",
+          locale: author.locale
+        })
       );
 
       this.client.users
-        .filter(u => u.id === user.id || u.id === matchedSearch.user_id)
+        .filter(u => u.id === user.id || u.id === matchedSearch.discord_user_id)
         .each(user => user.send(notificationEmbed));
     }
   }

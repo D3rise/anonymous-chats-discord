@@ -5,15 +5,9 @@ import i18n, { __ } from "i18n";
 class InfoCommand extends Command {
   constructor() {
     super("info", {
-      aliases: [
-        __("инфо"),
-        __("информация"),
-        __("статистика"),
-        __("статы"),
-        __("stats")
-      ],
-      category: __("Бот"),
-      description: __("Получить информацию о боте")
+      aliases: ["stats", "info"],
+      category: "categories.bot",
+      description: "commands.info.desc"
     });
   }
 
@@ -22,22 +16,32 @@ class InfoCommand extends Command {
 
     return message.channel.send(
       new MessageEmbed()
-        .setAuthor(__("Статистика"), this.client.user.displayAvatarURL())
-        .addField(__("> Пользователи"), this.client.users.size, true)
-        .addField(__("> Сервера"), this.client.guilds.size, true)
-        .addField(__("> Диалоги"), await this.chatRepository.count(), true)
-        .addField(__("> Диалоги в данный момент"), dialogueCount.length, true)
+        .setAuthor(
+          __("commands.info.stats"),
+          this.client.user.displayAvatarURL()
+        )
+        .addField(__("commands.info.users"), this.client.users.size, true)
+        .addField(__("commands.info.guilds"), this.client.guilds.size, true)
         .addField(
-          __("> Собеседники в данный момент"),
-          dialogueCount.length / 2,
+          __("commands.info.dialogues"),
+          await this.chatRepository.count(),
           true
         )
-        .addField(__("> Текущий шард"), this.client.shard.ids[0], true)
+        .addField(
+          __("commands.info.dialoguesInThisMoment"),
+          dialogueCount.length,
+          true
+        )
+        .addField(
+          __("commands.info.interlucutorsCount"),
+          dialogueCount.length * 2,
+          true
+        )
+        .addField(__("commands.info.shardId"), this.client.shard.ids[0], true)
         .setDescription(
-          __(
-            `[Пригласить меня на свой сервер](https://discordapp.com/api/oauth2/authorize?client_id={{botId}}&permissions=388160&scope=bot)`,
-            { botId: this.client.user.id }
-          )
+          __(`commands.info.inviteMeToYourServer`, {
+            botId: this.client.user.id
+          })
         )
     );
   }

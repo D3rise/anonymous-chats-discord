@@ -1,6 +1,6 @@
 {
   "name": "anonymous-chat",
-  "version": "0.1",
+  "version": "0.1.1",
   "main": "dist/shardingManager.js",
   "license": "Apache-2.0",
   "scripts": {
@@ -31,8 +31,6 @@
   },
   "devDependencies": {
     "@trongnd/ts-nodemon": "^1.0.3",
-    "nodemon": "^2.0.2",
-    "tsc": "^1.20150623.0",
     "typescript": "^3.8.3"
   }
 }

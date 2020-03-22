@@ -7,6 +7,7 @@ import { User } from "../entity/User.entity";
 import CustomClient from "./Client";
 import { Report } from "../entity/Report.entity";
 import { Message } from "discord.js";
+import i18n from "i18n";
 
 class CustomCommand extends Command {
   client: CustomClient;
@@ -16,6 +17,7 @@ class CustomCommand extends Command {
   userRepository: Repository<User>;
   reportRepository: Repository<Report>;
   user: User;
+  guild: Guild;
 
   constructor(id: string, options?: CommandOptions) {
     super(id, options);
@@ -30,6 +32,13 @@ class CustomCommand extends Command {
     this.user = await this.userRepository.findOne({
       user_id: message.author.id
     });
+    i18n.setLocale(this.user.locale);
+
+    if (message.guild) {
+      this.guild = await this.guildRepository.findOne({
+        where: { discord_id: message.guild.id }
+      });
+    }
   }
 }
 

@@ -8,24 +8,21 @@ import { __ } from "i18n";
 class SearchCommand extends Command {
   constructor() {
     super("поиск", {
-      aliases: [__("поиск"), __("search")],
-      category: __("Чат"),
-      description: __("Начать поиск собеседника")
+      aliases: ["search"],
+      category: "categories.chat",
+      description: "commands.search.desc"
     });
   }
 
   async exec(message: Message) {
     const handleMessageError = () =>
       message.channel.send(
-        this.client.errorEmbed(
-          __("К сожалению, бот не может отправить вам сообщение.\n") +
-            __("Проверьте свои настройки конфиденциальности.")
-        )
+        this.client.errorEmbed(__("errors.cantSendMessage"))
       );
 
     if (message.guild !== null)
       message.delete({
-        reason: __("Команда поиска собеседника")
+        reason: __("commands.search.reasonForMessageDelete")
       });
 
     const chat = await this.chatRepository.findOne({
@@ -36,11 +33,11 @@ class SearchCommand extends Command {
     });
     if (chat)
       return message.author
-        .send(this.client.errorEmbed(__("Вы уже находитесь в чате!")))
+        .send(this.client.errorEmbed(__("errors.youAlreadyInTheChat")))
         .catch(handleMessageError);
 
     let userSearchRecord = await this.searchRepository.findOne({
-      user_id: message.author.id
+      discord_user_id: message.author.id
     });
 
     if (userSearchRecord) {
@@ -50,36 +47,39 @@ class SearchCommand extends Command {
       return message.author
         .send(
           this.client.errorEmbed(
-            __(
-              `Поиск собеседника был отменен.\nВремя ожидания: {{waitingTime}}`,
-              {
-                waitingTime: moment
-                  .duration(diff, "milliseconds")
-                  .format(__("HH часов, mm минут, ss секунд"))
-              }
-            )
+            __(`commands.search.searchHasBeenCancelled`, {
+              waitingTime: moment
+                .duration(diff, "milliseconds")
+                .format(__("other.timeFormat"))
+            })
           )
         )
         .catch(handleMessageError);
     }
 
     userSearchRecord = this.searchRepository.create({
-      user_id: message.author.id,
-      started_at: new Date()
+      discord_user_id: message.author.id,
+      started_at: new Date(),
+      user: this.user
     });
     await this.searchRepository.save(userSearchRecord);
 
     message.author
       .send(
         this.client.successEmbed(
-          "Поиск собеседника был начат.\n" +
-            `На данный момент собеседника ищут: ${(await this.searchRepository.count()) -
-              1} человек(а) не включая вас`
+          __("commands.search.searchHasBeenStarted", {
+            count: String((await this.searchRepository.count()) - 1)
+          })
         )
       )
       .catch(handleMessageError);
 
-    this.client.emit("searchStarted", message.author, userSearchRecord);
+    this.client.emit(
+      "searchStarted",
+      message.author,
+      this.user,
+      userSearchRecord
+    );
   }
 }
 

@@ -5,9 +5,9 @@ import { __ } from "i18n";
 class StopCommand extends Command {
   constructor() {
     super("stop", {
-      aliases: [__("стоп"), __("stop")],
-      description: __("Выйти из чата"),
-      category: __("Чат"),
+      aliases: ["stop"],
+      description: "commands.stop.desc",
+      category: "categories.chat",
       prefix: "!",
       channel: "dm"
     });
@@ -23,10 +23,12 @@ class StopCommand extends Command {
 
     if (!chat)
       return message.channel.send(
-        this.client.errorEmbed(__("Вы не находитесь в чате!"))
+        this.client.errorEmbed(__("errors.youAreNotInTheChat"))
       );
 
-    const embed = this.client.successEmbed(__("Собеседник покинул чат."));
+    const embed = this.client.successEmbed(
+      __("commands.stop.broHasCancelledTheChat")
+    );
     if (chat.user1_id === message.author.id) {
       this.client.users.find(user => user.id === chat.user2_id).send(embed);
     } else {
@@ -37,7 +39,7 @@ class StopCommand extends Command {
     await this.chatRepository.save(chat);
 
     return message.channel.send(
-      this.client.successEmbed(__("Чат был окончен."))
+      this.client.successEmbed(__("commands.stop.chatIsOver"))
     );
   }
 }

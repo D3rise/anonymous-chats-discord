@@ -4,14 +4,14 @@ import i18n, { __ } from "i18n";
 
 class HelpCommand extends Command {
   constructor() {
-    super("помощь", {
-      aliases: [__("помощь"), __("команды"), __("help"), __("commands")],
-      category: __("Бот"),
-      description: __("Получить список команд бота"),
+    super("help", {
+      aliases: ["help"],
+      category: "categories.bot",
+      description: "commands.help.desc",
       args: [
         {
           id: "command",
-          description: __("Команда, по которой нужно узнать помощь")
+          description: "commands.help.args.command.desc"
         }
       ]
     });
@@ -31,27 +31,26 @@ class HelpCommand extends Command {
       let temp = "";
       let cmds = 0;
       let embed = new MessageEmbed();
-      embed.setDescription(
-        __(
-          "Команды, которые начинаются с префикса `!` могут быть использованы только в личных сообщениях."
-        )
+      embed.setDescription(__("commands.help.DMprefixDisclaimer"));
+      embed.setAuthor(
+        __("commands.help.commandsList"),
+        this.client.user.displayAvatarURL()
       );
-      embed.setAuthor("Список команд", this.client.user.displayAvatarURL());
 
       categories.forEach((category, categoryName) => {
         category.forEach((cmd, name) => {
           cmds++;
-          temp += `**${cmd.prefix ? cmd.prefix : prefix}${cmd.aliases[0]}** - ${
-            cmd.description
-          }\n`;
+          temp += `**${cmd.prefix ? cmd.prefix : prefix}${
+            cmd.aliases[0]
+          }** - ${__(cmd.description)}\n`;
         });
 
-        embed.addField(categoryName, temp);
+        embed.addField(__(categoryName), temp);
         temp = "";
       });
 
       embed.setFooter(
-        __(`Количество команд: {{cmds}}`, { cmds: String(cmds) })
+        __(`commands.help.countOfCommands`, { cmds: String(cmds) })
       );
       message.channel.send(embed);
     }

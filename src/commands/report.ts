@@ -6,10 +6,10 @@ import { __ } from "i18n";
 class ReportCommand extends Command {
   constructor() {
     super("report", {
-      aliases: [__("жалоба"), __("репорт"), __("report")],
+      aliases: ["report"],
       prefix: "!",
-      description: __("Отправить жалобу на собеседника"),
-      category: __("Чат"),
+      description: "commands.report.desc",
+      category: "categories.chat",
       channel: "dm"
     });
   }
@@ -24,7 +24,7 @@ class ReportCommand extends Command {
 
     if (!chat)
       return message.channel.send(
-        this.client.errorEmbed(__("Вы не находитесь в чате!"))
+        this.client.errorEmbed(__("errors.youAreNotInTheChat"))
       );
 
     const reportedUser = await this.userRepository.findOne({
@@ -41,7 +41,7 @@ class ReportCommand extends Command {
     });
     if (reportInChat) {
       return message.channel.send(
-        this.client.errorEmbed(__("Вы уже отправляли жалобу в этом чате!"))
+        this.client.errorEmbed(__("errors.youHaveBeenSendedReportInThisChat"))
       );
     }
 
@@ -55,11 +55,8 @@ class ReportCommand extends Command {
 
     message.channel.send(
       this.client.successEmbed(
-        __("**Жалоба была успешно отправлена!**\n") +
-          __(
-            "Имейте ввиду, что за жалобу без уважительных на\n" +
-              "то причин вам будет выдано предупреждение."
-          )
+        __("commands.report.reportHasBeenSended") +
+          __("commands.report.reportDisclaimer")
       )
     );
 
@@ -69,7 +66,7 @@ class ReportCommand extends Command {
       await this.chatRepository.save(chat);
 
       message.channel.send(
-        this.client.errorEmbed(__("Собеседник был заблокирован.\nЧат окончен."))
+        this.client.errorEmbed(__("commands.report.chatHasEndedUserBanned"))
       );
 
       const reportedUserDiscord = await this.client.users.fetch(
@@ -78,13 +75,9 @@ class ReportCommand extends Command {
 
       reportedUserDiscord.send(
         this.client.errorEmbed(
-          __("К сожалению, вы были заблокированы.\n") +
-            __(
-              "Чтобы подать заявку на разблокировку аккаунта, " +
-                `напишите администрации на [этом]({{contactServerInvite}}) ` +
-                "сервере, почему по вашему мнению блокировка безосновательна.",
-              { contactServerInvite: this.client.contactServerInvite }
-            )
+          __("errors.banned", {
+            contactServerInvite: this.client.contactServerInvite
+          })
         )
       );
     }

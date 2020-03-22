@@ -5,13 +5,13 @@ import i18n, { __ } from "i18n";
 class PrefixCommand extends Command {
   constructor() {
     super("prefix", {
-      aliases: [__("prefix")],
-      category: __("Бот"),
-      description: __("Изменить префикс бота на вашем сервере"),
+      aliases: ["prefix"],
+      category: "categories.bot",
+      description: "commands.prefix.desc",
       args: [
         {
           id: "newPrefix",
-          description: __("Новый префикс")
+          description: __("commands.prefix.args.newPrefix.desc")
         }
       ],
       channel: "guild"
@@ -26,7 +26,7 @@ class PrefixCommand extends Command {
     if (args.newPrefix) {
       if (!message.member.hasPermission("MANAGE_GUILD")) {
         return message.channel.send(
-          this.client.errorEmbed(__("Недостаточно разрешений!"))
+          this.client.errorEmbed(__("errors.insufficientPermissions"))
         );
       }
 
@@ -36,7 +36,7 @@ class PrefixCommand extends Command {
 
       return message.channel.send(
         this.client.successEmbed(
-          __(`Новый префикс бота на этом сервере: \`{{newPrefix}}\``, {
+          __(`commands.prefix.newPrefixMessage`, {
             newPrefix: guildRecord.prefix
           })
         )
@@ -45,8 +45,8 @@ class PrefixCommand extends Command {
 
     message.channel.send(
       this.client.embed(
-        __(`Текущий префикс на этом сервере: \`{{newPrefix}}\``, {
-          newPrefix: guildRecord.prefix
+        __(`Текущий префикс на этом сервере: \`{{currentPrefix}}\``, {
+          currentPrefix: guildRecord.prefix
         })
       )
     );

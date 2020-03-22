@@ -9,7 +9,7 @@ class BanInhibitor extends Inhibitor {
 
   constructor() {
     super("banned", {
-      reason: __("бан")
+      reason: __("inhibitors.ban.banReason")
     });
 
     this.userRepository = getRepository(User);
@@ -22,13 +22,12 @@ class BanInhibitor extends Inhibitor {
     if (user.banned) {
       message.channel.send(
         this.client.errorEmbed(
-          __("К сожалению, вы были заблокированы.\n") +
-            __(
-              "Чтобы подать заявку на разблокировку аккаунта, " +
-                `напишите администрации на [этом]({{contactServerInvite}}) ` +
-                "сервере, почему по вашему мнению блокировка безосновательна.",
-              { contactServerInvite: this.client.contactServerInvite }
-            )
+          __(
+            { phrase: "errors.banned", locale: user.locale },
+            {
+              contactServerInvite: this.client.contactServerInvite
+            }
+          )
         )
       );
       return true;

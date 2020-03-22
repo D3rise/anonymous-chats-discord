@@ -26,6 +26,7 @@ dotenv.config();
 
 interface ICustomClientOptions {
   defaultPrefix: string;
+  defaultLocale?: string;
   contactServerInvite?: string;
 }
 
@@ -45,6 +46,7 @@ class CustomClient extends AkairoClient {
     clientOptions?: ClientOptions
   ) {
     super(options, clientOptions);
+    this.options.defaultLocale = config.defaultLocale;
 
     log4js.configure({
       appenders: {
@@ -54,10 +56,7 @@ class CustomClient extends AkairoClient {
         default: { appenders: ["out"], level: "debug" }
       }
     });
-    this.contactServerInvite =
-      process.env.LOCALE === "ru"
-        ? config.contactServerInviteRu
-        : config.contactServerInviteEn;
+    this.contactServerInvite = config.contactServerInvite;
 
     i18n.configure({
       directory: path.join(__dirname, "..", "..", "lang"),
@@ -75,10 +74,7 @@ class CustomClient extends AkairoClient {
   private async init() {
     this.db = await createConnection({
       type: "postgres",
-      url:
-        process.env.LOCALE === "ru"
-          ? process.env.POSTGRES_URL
-          : process.env.POSTGRES_URL_EN,
+      url: process.env.POSTGRES_URL,
       entities: [path.join(__dirname, "..", "entity", "*.entity.{ts,js}")],
       namingStrategy: new SnakeNamingStrategy()
     });
@@ -98,7 +94,7 @@ class CustomClient extends AkairoClient {
         const users = [chat.user1_id, chat.user2_id];
         users.forEach(async userId => {
           const embed = this.errorEmbed(
-            __("Чат был окончен из-за отсутствия активности в течении 5 минут.")
+            __({ phrase: "errors.chatTimeout", locale: chat.locale })
           );
           const user = await this.users.fetch(userId);
           user.send(embed);

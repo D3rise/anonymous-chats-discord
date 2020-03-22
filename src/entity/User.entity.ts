@@ -1,6 +1,14 @@
-import { PrimaryGeneratedColumn, Column, Entity, OneToMany } from "typeorm";
+import {
+  PrimaryGeneratedColumn,
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  JoinColumn
+} from "typeorm";
 import { Report } from "./Report.entity";
 import { Message } from "./Message.entity";
+import { Search } from "./Search.entity";
 
 const genderEnum = ["unspecified", "female", "male"];
 
@@ -12,14 +20,26 @@ export class User {
   @Column({ unique: true })
   user_id: string;
 
-  @Column("simple-json", { default: {} })
-  config: { preferedGender: string; gender: string; age: number };
+  @Column("simple-json", { default: { preferedGender: "none" } })
+  config: { preferedGender: string; guild: string };
 
   @Column({ default: "unspecified", enum: genderEnum })
   gender: string;
 
   @Column({ default: false })
   banned: boolean;
+
+  @Column({ enum: ["ru", "en"], default: "ru" })
+  locale: string;
+
+  @OneToOne(
+    type => Search,
+    search => search.user,
+    {
+      cascade: false
+    }
+  )
+  currentSearch: Search;
 
   @OneToMany(
     () => Report,
