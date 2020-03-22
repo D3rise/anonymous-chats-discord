@@ -20,7 +20,6 @@ class DeanonCommand extends Command {
       );
     }
 
-    console.log(this.chat.deanonApprovalUsers);
     if (this.chat.deanonApprovalUsers.includes(message.author.id)) {
       return message.channel.send(
         this.client.errorEmbed(__("errors.youAlreadyVotedForDeanon"))
