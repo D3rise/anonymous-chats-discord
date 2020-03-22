@@ -18,6 +18,8 @@ class CustomCommand extends Command {
   reportRepository: Repository<Report>;
   user: User;
   guild: Guild;
+  chat: Chat;
+  userChatId: string;
 
   constructor(id: string, options?: CommandOptions) {
     super(id, options);
@@ -33,6 +35,24 @@ class CustomCommand extends Command {
       user_id: message.author.id
     });
     i18n.setLocale(this.user.locale);
+
+    this.chat = await this.chatRepository.findOne({
+      where: [
+        {
+          user1_id: this.user.user_id,
+          ended_at: null
+        },
+        {
+          user2_id: this.user.user_id,
+          ended_at: null
+        }
+      ]
+    });
+
+    if (this.chat) {
+      this.userChatId =
+        this.chat.user1_id === message.author.id ? "user1_id" : "user2_id";
+    }
 
     if (message.guild) {
       this.guild = await this.guildRepository.findOne({

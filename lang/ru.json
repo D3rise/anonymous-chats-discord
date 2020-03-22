@@ -11,6 +11,7 @@
   "errors.youHaveBeenSendedReportInThisChat": "Вы уже отправляли жалобу в этом чате!",
   "errors.cantSendMessage": "К сожалению, бот не может отправить вам сообщение.\nПроверьте свои настройки конфиденциальности.",
   "errors.noLinksInTheChat": "В чате нельзя отправлять ссылки!",
+  "errors.youAlreadyVotedForDeanon": "Вы уже проголосовали за раскрытие ников!",
   "errors.chatTimeout": "Чат был окончен из-за отсутствия активности в течении 5 минут.",
   "inhibitors.ban.banReason": "бан",
   "commands.help.desc": "Получить список команд",
@@ -53,5 +54,9 @@
   "commands.language.thisLanguageDoesNotExistPleaseUseOneOfThose": "Такого языка нет! Используйте один из этих: {{languages}}",
   "commands.language.languageHasChanged": "Язык успешно изменен! Текущий язык: {{language}}",
   "commands.language.russian": "Русский",
-  "commands.language.english": "Английский"
+  "commands.language.english": "Английский",
+  "commands.deanon.desc": "Предложить собеседнику раскрыть ваши ники",
+  "commands.deanon.tagOfYourBro": "Тег вашего собеседника: **{{userTag}}**",
+  "commands.deanon.youOfferedDeanon": "Вы предложили собеседнику раскрыть ваши ники.",
+  "commands.deanon.deanonOffer": "Собеседник предлагает вам раскрыть ваши ники!\nЧтобы принять предложение, напишите `!deanon`"
 }

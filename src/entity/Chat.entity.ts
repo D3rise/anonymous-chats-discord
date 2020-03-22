@@ -15,7 +15,7 @@ export class Chat {
   @Column()
   user1_id: string;
 
-  @Column() // not the relation, because relation search is slower than this
+  @Column()
   user2_id: string;
 
   @Column({ default: new Date() })
@@ -23,6 +23,9 @@ export class Chat {
 
   @Column({ type: "timestamp with time zone", nullable: true })
   ended_at: Date;
+
+  @Column("simple-array", { default: [] })
+  deanonApprovalUsers: string[];
 
   @Column()
   locale: string;
