@@ -34,6 +34,7 @@ class StopSearchCommand extends Command {
     chat.endedAt = new Date();
     await this.chatRepository.save(chat);
 
+    this.client.updateChatCount();
     message.channel.send(
       this.client.successEmbed(__("commands.stop.chatIsOver"))
     );
@@ -75,6 +76,11 @@ class StopSearchCommand extends Command {
       startedAt: new Date(),
       user: this.user
     });
+
+    if (message.guild) {
+      userSearchRecord.guildId = message.guild.id;
+    }
+
     await this.searchRepository.save(userSearchRecord);
 
     message.author

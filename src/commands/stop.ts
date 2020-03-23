@@ -1,5 +1,5 @@
 import Command from "../struct/Command";
-import { Message } from "discord.js";
+import { Message, User } from "discord.js";
 import { __ } from "i18n";
 
 class StopCommand extends Command {
@@ -25,14 +25,19 @@ class StopCommand extends Command {
       __("commands.stop.broHasCancelledTheChat")
     );
     if (chat.user1Id === message.author.id) {
-      this.client.users.find(user => user.id === chat.user2Id).send(embed);
+      const user: User = this.client.users.find(usr => usr.id === chat.user2Id);
+      user.dmChannel.stopTyping(true);
+      user.send(embed);
     } else {
-      this.client.users.find(user => user.id === chat.user1Id).send(embed);
+      const user: User = this.client.users.find(usr => usr.id === chat.user1Id);
+      user.dmChannel.stopTyping();
+      user.send(embed);
     }
 
     chat.endedAt = new Date();
     await this.chatRepository.save(chat);
 
+    this.client.updateChatCount();
     return message.channel.send(
       this.client.successEmbed(__("commands.stop.chatIsOver"))
     );

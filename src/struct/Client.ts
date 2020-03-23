@@ -210,6 +210,21 @@ class CustomClient extends AkairoClient {
       config.interlocutorsChannelText + countOfInterlocutors
     );
   }
+
+  public humanizeSetting(value: string | boolean) {
+    switch (value) {
+      case "male":
+        return "other.maleGender";
+      case "female":
+        return "other.femaleGender";
+      case "none":
+        return "other.noneGender";
+      case true:
+        return "other.yes";
+      case false:
+        return "other.no";
+    }
+  }
 }
 
 export default CustomClient;

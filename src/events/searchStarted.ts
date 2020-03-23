@@ -2,7 +2,7 @@ import Listener from "../struct/Listener";
 import { User } from "discord.js";
 import { User as UserEntity } from "../entity/User.entity";
 import { Search } from "../entity/Search.entity";
-import i18n from "i18n";
+import i18n, { __ } from "i18n";
 
 class SearchStartedListener extends Listener {
   constructor() {
@@ -13,29 +13,39 @@ class SearchStartedListener extends Listener {
   }
 
   async exec(user: User, author: UserEntity, search: Search) {
-    const matchedSearch = await this.searchRepository
+    const searchQuery = this.searchRepository
       .createQueryBuilder("search")
       .leftJoinAndSelect("search.user", "user")
-      .where("user.locale = :locale", { locale: author.locale })
-      .andWhere("search.discord_user_id != :userId", { userId: user.id })
       .orderBy("search.started_at")
-      .getOne();
+      .where("user.locale = :locale", { locale: author.locale })
+      .andWhere("search.discord_user_id != :userId", { userId: user.id });
 
-    // findOne({
-    //   relations: ["user"],
-    //   where: {
-    //     discord_user_id: Not(user.id),
-    //     user: {
-    //       locale: author.locale
-    //     }
-    //   },
-    //   order: {
-    //     started_at: -1
-    //   }
-    // });
+    if (author.config.preferredGender !== "none") {
+      searchQuery.andWhere("user.config ->> 'gender' = :gender", {
+        gender: author.config.preferredGender
+      });
+    }
+
+    if (author.config.guild) {
+      searchQuery.andWhere("search.guildId = :guildId", {
+        guildId: search.guildId
+      });
+    }
+    const matchedSearch = await searchQuery.getOne();
 
     // equivalent to matchedSearch !== null && matchedSearch !== undefined
     if (matchedSearch) {
+      const preferredGender = matchedSearch.user.config.preferredGender;
+      const guildOnly = matchedSearch.user.config.guild;
+
+      if (
+        (preferredGender !== "none" &&
+          preferredGender !== author.config.gender) ||
+        (guildOnly && search.guildId !== matchedSearch.guildId)
+      ) {
+        return;
+      }
+
       await this.searchRepository.delete(search);
       await this.searchRepository.delete(matchedSearch);
 
@@ -47,10 +57,17 @@ class SearchStartedListener extends Listener {
       await this.chatRepository.save(chat);
 
       const notificationEmbed = this.client.successEmbed(
-        i18n.__({
-          phrase: "other.searchWasFoundReadTheRules",
-          locale: author.locale
-        })
+        i18n.__(
+          {
+            phrase: "other.searchWasFoundReadTheRules",
+            locale: author.locale
+          },
+          {
+            gender: __(
+              this.client.humanizeSetting(matchedSearch.user.config.gender)
+            )
+          }
+        )
       );
 
       this.client.users

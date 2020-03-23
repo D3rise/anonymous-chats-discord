@@ -54,11 +54,26 @@ class SearchCommand extends Command {
         .catch(handleMessageError);
     }
 
+    if (this.user.config.guild && !message.guild) {
+      return message.channel.send(
+        this.client.errorEmbed(
+          __("errors.guildSearchUnavaliableChangeTheSetting", {
+            prefix: this.client.options.defaultPrefix
+          })
+        )
+      );
+    }
+
     userSearchRecord = this.searchRepository.create({
       discordUserId: message.author.id,
       startedAt: new Date(),
       user: this.user
     });
+
+    if (message.guild) {
+      userSearchRecord.guildId = message.guild.id;
+    }
+
     await this.searchRepository.save(userSearchRecord);
 
     message.author

@@ -9,6 +9,7 @@ import {
 import { Report } from "./Report.entity";
 import { Message } from "./Message.entity";
 import { Search } from "./Search.entity";
+import i18n from "i18n";
 
 const genderEnum = ["unspecified", "female", "male"];
 
@@ -20,12 +21,13 @@ export class User {
   @Column({ unique: true })
   userId: string;
 
-  @Column("simple-json", {
-    default: { gender: "none", preferedGender: "none", guild: false }
+  @Column("jsonb", {
+    default: { gender: "none", preferredGender: "none", guild: false }
   })
   config: {
+    [key: string]: any;
     gender: string;
-    preferedGender: string;
+    preferredGender: string;
     guild: boolean;
   };
 
