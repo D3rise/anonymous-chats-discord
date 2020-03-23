@@ -1,6 +1,7 @@
 {
   "categories.bot": "Bot",
   "categories.chat": "Chat",
+  "categories.config": "Settings",
   "other.timeFormat": "HH [hour(s)], mm [minute(s)], ss [second(s)]",
   "other.botStatus": "{{guilds}} servers / {{prefix}}help",
   "other.maleGender": "Male",
@@ -71,10 +72,13 @@
   "commands.deanon.youOfferedDeanon": "You asked the other person to reveal your nicknames.",
   "commands.deanon.deanonOffer": "The interlocutor offers you to reveal your nicknames\nTo accept the offer, write `!deanon`",
   "commands.config.genderOption": "Gender",
+  "commands.config.desc": "Change or view your current settings",
+  "commands.config.args.option.desc": "Number of option that you want to change",
+  "commands.config.args.newValue.desc": "New value of option that you want to change",
   "commands.config.prefferedGender": "Preffered gender",
   "commands.config.guild": "Search only inside the guild",
   "commands.config.optionField": "{{id}}. **{{name}}**: *{{value}}*",
   "commands.config.currentConfig": "Current config: {{list}}",
   "commands.config.howToSetNewValue": "To set new value, use {{prefix}}config <number of option> <new value>",
-  "commands.valueHasChanged": "Value of setting \"{{option}}\" is now equals: \"{{value}}\""
+  "commands.config.valueHasChanged": "Value of setting \"{{option}}\" is now equals: \"{{value}}\""
 }

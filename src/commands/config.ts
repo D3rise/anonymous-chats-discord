@@ -144,7 +144,7 @@ class ConfigCommand extends Command {
     await this.userRepository.save(this.user);
 
     const embed = this.client.successEmbed(
-      __("commands.valueHasChanged", {
+      __("commands.config.valueHasChanged", {
         option: option.name,
         value: newValue.name
       })

@@ -1,6 +1,7 @@
 {
   "categories.bot": "Бот",
   "categories.chat": "Чат",
+  "categories.config": "Настройки",
   "other.timeFormat": "HH [часов], mm [минут], ss [секунд]",
   "other.botStatus": "{{guilds}} серверов / {{prefix}}help",
   "other.maleGender": "Мужской",
@@ -71,10 +72,13 @@
   "commands.deanon.youOfferedDeanon": "Вы предложили собеседнику раскрыть ваши ники.",
   "commands.deanon.deanonOffer": "Собеседник предлагает вам раскрыть ваши ники!\nЧтобы принять предложение, напишите `!deanon`",
   "commands.config.genderOption": "Пол",
+  "commands.config.desc": "Изменить или просмотреть текущие настройки",
+  "commands.config.args.option.desc": "Номер настройки, которую вы хотите изменить",
+  "commands.config.args.newValue.desc": "Новое значение настройки, которую вы хотите изменить",
   "commands.config.prefferedGender": "Предпочитаемый пол в поиске",
   "commands.config.guild": "Искать собеседника на сервере (если нет - искать глобально)",
   "commands.config.optionField": "{{id}}. **{{name}}**: {{value}}",
   "commands.config.currentConfig": "Текущие настройки: {{list}}",
   "commands.config.howToSetNewValue": "Чтобы изменить настройки, используйте {{prefix}}config <номер настройки> <новое значение>",
-  "commands.valueHasChanged": "Значение настройки \"{{option}}\" теперь равно: \"{{value}}\""
+  "commands.config.valueHasChanged": "Значение настройки \"{{option}}\" теперь равно: \"{{value}}\""
 }
