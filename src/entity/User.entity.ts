@@ -20,16 +20,19 @@ export class User {
   @Column({ unique: true })
   userId: string;
 
-  @Column("simple-json", { default: { preferedGender: "none" } })
-  config: { preferedGender: string; guild: string };
-
-  @Column({ default: "unspecified", enum: genderEnum })
-  gender: string;
+  @Column("simple-json", {
+    default: { gender: "none", preferedGender: "none", guild: false }
+  })
+  config: {
+    gender: string;
+    preferedGender: string;
+    guild: boolean;
+  };
 
   @Column({ default: false })
   banned: boolean;
 
-  @Column({ enum: ["ru", "en"], default: "ru" })
+  @Column({ enum: i18n.getLocales(), default: "ru" })
   locale: string;
 
   @OneToOne(type => Search, search => search.user, {
