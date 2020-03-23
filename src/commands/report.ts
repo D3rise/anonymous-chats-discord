@@ -1,6 +1,5 @@
 import Command from "../struct/Command";
 import { Message } from "discord.js";
-import { User } from "../entity/User.entity";
 import { __ } from "i18n";
 
 class ReportCommand extends Command {
@@ -17,8 +16,8 @@ class ReportCommand extends Command {
   async exec(message: Message) {
     const chat = await this.chatRepository.findOne({
       where: [
-        { user1_id: message.author.id, ended_at: null },
-        { user2_id: message.author.id, ended_at: null }
+        { user1Id: message.author.id, ended_at: null },
+        { user2Id: message.author.id, ended_at: null }
       ]
     });
 
@@ -30,14 +29,14 @@ class ReportCommand extends Command {
     const reportedUser = await this.userRepository.findOne({
       where: {
         user_id:
-          chat.user1_id === message.author.id ? chat.user2_id : chat.user1_id
+          chat.user1Id === message.author.id ? chat.user2Id : chat.user1Id
       },
       relations: ["reports"]
     });
 
     const reportInChat = await this.reportRepository.findOne({
       chat,
-      author_discord_id: message.author.id
+      authorDiscordId: message.author.id
     });
     if (reportInChat) {
       return message.channel.send(
@@ -48,7 +47,7 @@ class ReportCommand extends Command {
     const report = this.reportRepository.create({
       user: reportedUser,
       chat,
-      author_discord_id: message.author.id,
+      authorDiscordId: message.author.id,
       date: new Date()
     });
     reportedUser.reports.push(report);
@@ -56,12 +55,13 @@ class ReportCommand extends Command {
     message.channel.send(
       this.client.successEmbed(
         __("commands.report.reportHasBeenSended") +
+          " " +
           __("commands.report.reportDisclaimer")
       )
     );
 
     if (reportedUser.reports.length >= 3) {
-      chat.ended_at = new Date();
+      chat.endedAt = new Date();
       reportedUser.banned = true;
       await this.chatRepository.save(chat);
 
@@ -70,7 +70,7 @@ class ReportCommand extends Command {
       );
 
       const reportedUserDiscord = await this.client.users.fetch(
-        reportedUser.user_id
+        reportedUser.userId
       );
 
       reportedUserDiscord.send(

@@ -17,7 +17,7 @@ class BanInhibitor extends Inhibitor {
 
   async exec(message: Message) {
     const user = await this.userRepository.findOne({
-      user_id: message.author.id
+      userId: message.author.id
     });
     if (user.banned) {
       message.channel.send(

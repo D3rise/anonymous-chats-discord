@@ -20,7 +20,7 @@ class PrefixCommand extends Command {
 
   async exec(message: Message, args: any) {
     const guildRecord = await this.guildRepository.findOne({
-      discord_id: message.guild.id
+      discordId: message.guild.id
     });
 
     if (args.newPrefix) {

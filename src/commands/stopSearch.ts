@@ -1,7 +1,7 @@
 import Command from "../struct/Command";
 import moment from "moment-timezone";
 import { Message } from "discord.js";
-import i18n, { __ } from "i18n";
+import { __ } from "i18n";
 
 class StopSearchCommand extends Command {
   constructor() {
@@ -15,12 +15,7 @@ class StopSearchCommand extends Command {
   }
 
   async exec(message: Message) {
-    const chat = await this.chatRepository.findOne({
-      where: [
-        { user1_id: message.author.id, ended_at: null },
-        { user2_id: message.author.id, ended_at: null }
-      ]
-    });
+    const chat = this.chat;
 
     if (!chat)
       return message.channel.send(
@@ -30,13 +25,13 @@ class StopSearchCommand extends Command {
     const embed = this.client.successEmbed(
       __("commands.stop.broHasCancelledTheChat")
     );
-    if (chat.user1_id === message.author.id) {
-      this.client.users.find(user => user.id === chat.user2_id).send(embed);
+    if (chat.user1Id === message.author.id) {
+      this.client.users.find(user => user.id === chat.user2Id).send(embed);
     } else {
-      this.client.users.find(user => user.id === chat.user1_id).send(embed);
+      this.client.users.find(user => user.id === chat.user1Id).send(embed);
     }
 
-    chat.ended_at = new Date();
+    chat.endedAt = new Date();
     await this.chatRepository.save(chat);
 
     message.channel.send(
@@ -54,17 +49,12 @@ class StopSearchCommand extends Command {
         reason: __("commands.search.reasonForMessageDelete")
       });
 
-    if (chat)
-      return message.author
-        .send(this.client.errorEmbed(__("errors.youAlreadyInTheChat")))
-        .catch(handleMessageError);
-
     let userSearchRecord = await this.searchRepository.findOne({
-      discord_user_id: message.author.id
+      discordUserId: message.author.id
     });
 
     if (userSearchRecord) {
-      const diff = moment().diff(moment(userSearchRecord.started_at));
+      const diff = moment().diff(moment(userSearchRecord.startedAt));
 
       await this.searchRepository.delete(userSearchRecord);
       return message.author
@@ -81,8 +71,8 @@ class StopSearchCommand extends Command {
     }
 
     userSearchRecord = this.searchRepository.create({
-      discord_user_id: message.author.id,
-      started_at: new Date(),
+      discordUserId: message.author.id,
+      startedAt: new Date(),
       user: this.user
     });
     await this.searchRepository.save(userSearchRecord);

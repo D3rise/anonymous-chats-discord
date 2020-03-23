@@ -14,19 +14,16 @@ export class Message {
   id: number;
 
   @Column()
-  discord_author_id: string;
+  discordAuthorId: string;
 
   @Column()
-  discord_id: string;
+  discordId: string;
 
   @Column()
-  sent_id: string;
+  sentId: string;
 
-  @ManyToOne(
-    () => User,
-    user => user.messages
-  )
-  author_user: User;
+  @ManyToOne(() => User, user => user.messages)
+  authorUser: User;
 
   @Column({ nullable: true })
   content: string;
@@ -35,11 +32,8 @@ export class Message {
   attachmentUris: string[];
 
   @Column({ default: new Date() })
-  created_at: Date;
+  createdAt: Date;
 
-  @ManyToOne(
-    () => Chat,
-    chat => chat.messages
-  )
+  @ManyToOne(() => Chat, chat => chat.messages)
   chat: Chat;
 }

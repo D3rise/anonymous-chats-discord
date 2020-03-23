@@ -22,6 +22,7 @@ import log4js from "log4js";
 import { Chat } from "../entity/Chat.entity";
 import * as config from "../config.json";
 import i18n, { __ } from "i18n";
+import { Search } from "../entity/Search.entity";
 dotenv.config();
 
 interface ICustomClientOptions {
@@ -81,17 +82,17 @@ class CustomClient extends AkairoClient {
     await this.db.synchronize();
 
     setInterval(async () => {
-      const repository = getRepository(Chat);
-      const expiredChats: Array<Chat> = await repository.query(
+      const chatRepository = getRepository(Chat);
+      const expiredChats: Chat[] = await chatRepository.query(
         "SELECT * FROM public.chat WHERE age(current_timestamp, last_message_date) > interval '5 minutes' AND ended_at IS NULL"
       );
       expiredChats.forEach(chat => {
-        repository.findOne(chat.id).then(expiredChat => {
-          expiredChat.ended_at = new Date();
-          repository.save(expiredChat);
+        chatRepository.findOne(chat.id).then(expiredChat => {
+          expiredChat.endedAt = new Date();
+          chatRepository.save(expiredChat);
         });
 
-        const users = [chat.user1_id, chat.user2_id];
+        const users = [chat.user1Id, chat.user2Id];
         users.forEach(async userId => {
           const embed = this.errorEmbed(
             __({ phrase: "errors.chatTimeout", locale: chat.locale })
@@ -99,6 +100,34 @@ class CustomClient extends AkairoClient {
           const user = await this.users.fetch(userId);
           user.send(embed);
         });
+      });
+
+      const searchRepository = getRepository(Search);
+      const expiredSearches: Search[] = await searchRepository
+        .createQueryBuilder("search")
+        .leftJoinAndSelect("search.user", "user")
+        .where("age(current_timestamp, started_at) > interval '15 minutes'")
+        .getMany();
+
+      expiredSearches.forEach(async expiredSearch => {
+        await searchRepository.delete(expiredSearch);
+        const searcher = await this.users.fetch(expiredSearch.discordUserId);
+        const embed = this.errorEmbed(
+          __({
+            phrase: "errors.searchTimeout",
+            locale: expiredSearch.user.locale
+          })
+        );
+
+        searcher.send(embed);
+      });
+
+      await this.updateChatCount();
+      await this.updateSearchCount();
+
+      this.channels.forEach((channel: any) => {
+        if (channel.type !== "dm") return;
+        channel.stopTyping(true);
       });
     }, 1000 * 10);
     this.logger.info("Connected to DB");
@@ -109,7 +138,7 @@ class CustomClient extends AkairoClient {
         if (message.guild) {
           const guildRecord = await this.db
             .getRepository(Guild)
-            .findOne({ discord_id: message.guild.id });
+            .findOne({ discordId: message.guild.id });
 
           return guildRecord.prefix;
         }
@@ -147,6 +176,39 @@ class CustomClient extends AkairoClient {
 
   public successEmbed(description: string) {
     return this.embed({ description, color: "#43a047" });
+  }
+
+  public async updateMessageCount() {
+    const repository = getRepository(MessageEntity);
+    const count = await repository.count();
+    const channel: any = await this.channels.fetch(
+      config.messagesCountChannelId
+    );
+    channel.setName(config.messagesCountText + count);
+  }
+
+  public async updateSearchCount() {
+    const repository = getRepository(Search);
+    const count = await repository.count();
+    const channel: any = await this.channels.fetch(config.searchCountChannelId);
+    channel.setName(config.searchCountText + count);
+  }
+
+  public async updateChatCount() {
+    const repository = getRepository(Chat);
+    const count = await repository.findAndCount({ where: { endedAt: null } });
+    const chatChannel: any = await this.channels.fetch(
+      config.chatsCountChannelId
+    );
+    chatChannel.setName(config.chatsCountText + count[1]);
+
+    const countOfInterlocutors = count[1] * 2; // 1 chat contains 2 interlocutors
+    const interlocutorsChannel: any = await this.channels.fetch(
+      config.interlocutorsChannelId
+    );
+    interlocutorsChannel.setName(
+      config.interlocutorsChannelText + countOfInterlocutors
+    );
   }
 }
 

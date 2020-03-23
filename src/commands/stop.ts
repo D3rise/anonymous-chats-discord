@@ -14,12 +14,7 @@ class StopCommand extends Command {
   }
 
   async exec(message: Message) {
-    const chat = await this.chatRepository.findOne({
-      where: [
-        { user1_id: message.author.id, ended_at: null },
-        { user2_id: message.author.id, ended_at: null }
-      ]
-    });
+    const chat = this.chat;
 
     if (!chat)
       return message.channel.send(
@@ -29,13 +24,13 @@ class StopCommand extends Command {
     const embed = this.client.successEmbed(
       __("commands.stop.broHasCancelledTheChat")
     );
-    if (chat.user1_id === message.author.id) {
-      this.client.users.find(user => user.id === chat.user2_id).send(embed);
+    if (chat.user1Id === message.author.id) {
+      this.client.users.find(user => user.id === chat.user2Id).send(embed);
     } else {
-      this.client.users.find(user => user.id === chat.user1_id).send(embed);
+      this.client.users.find(user => user.id === chat.user1Id).send(embed);
     }
 
-    chat.ended_at = new Date();
+    chat.endedAt = new Date();
     await this.chatRepository.save(chat);
 
     return message.channel.send(

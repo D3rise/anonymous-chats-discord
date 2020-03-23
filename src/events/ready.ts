@@ -1,28 +1,13 @@
 import Listener from "../struct/Listener";
-import { Guild } from "../entity/Guild.entity";
-import { Repository, getRepository } from "typeorm";
-import { User } from "../entity/User.entity";
-import { Chat } from "../entity/Chat.entity";
-import { Search } from "../entity/Search.entity";
 import { SDC } from "sdc-type";
 import i18n from "i18n";
 
 class ReadyListener extends Listener {
-  guildRepository: Repository<Guild>;
-  userRepository: Repository<User>;
-  chatRepository: Repository<Chat>;
-  searchRepository: Repository<Search>;
-
   constructor() {
     super("ready", {
       emitter: "client",
       event: "ready"
     });
-
-    this.guildRepository = getRepository(Guild);
-    this.userRepository = getRepository(User);
-    this.chatRepository = getRepository(Chat);
-    this.searchRepository = getRepository(Search);
   }
 
   exec() {
@@ -31,22 +16,24 @@ class ReadyListener extends Listener {
     );
 
     this.client.guilds.forEach(guild => {
-      this.guildRepository.findOne({ discord_id: guild.id }).then(async g => {
-        if (!g) {
-          const guildRecord = this.guildRepository.create({
-            discord_id: guild.id
-          });
-          this.guildRepository.save(guildRecord);
-          this.client.logger.debug(`Created guild record for ${guild.id}`);
-        }
-      });
+      this.guildRepository
+        .findOne({ discordId: guild.id })
+        .then(async guildRec => {
+          if (!guildRec) {
+            const guildRecord = this.guildRepository.create({
+              discordId: guild.id
+            });
+            this.guildRepository.save(guildRecord);
+            this.client.logger.debug(`Created guild record for ${guild.id}`);
+          }
+        });
 
       guild.members.each(member => {
         if (member.user.bot) return;
-        this.userRepository.findOne({ user_id: member.id }).then(user => {
+        this.userRepository.findOne({ userId: member.id }).then(user => {
           if (!user) {
             const userRecord = this.userRepository.create({
-              user_id: member.id
+              userId: member.id
             });
             this.userRepository.save(userRecord);
           }

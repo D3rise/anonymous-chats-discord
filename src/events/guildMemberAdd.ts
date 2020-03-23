@@ -1,12 +1,9 @@
 import Listener from "../struct/Listener";
 import { User } from "../entity/User.entity";
 import { GuildMember } from "discord.js";
-import { Repository, getRepository } from "typeorm";
-import i18n from "i18n";
+import { getRepository } from "typeorm";
 
 class GuildMemberAddListener extends Listener {
-  userRepository: Repository<User>;
-
   constructor() {
     super("guildMemberAdd", {
       event: "guildMemberAdd",
@@ -18,10 +15,10 @@ class GuildMemberAddListener extends Listener {
 
   async exec(member: GuildMember) {
     if (member.user.bot) return;
-    this.userRepository.findOne({ user_id: member.id }).then(user => {
+    this.userRepository.findOne({ userId: member.id }).then(user => {
       if (!user) {
         const userRecord = this.userRepository.create({
-          user_id: member.id
+          userId: member.id
         });
         this.userRepository.save(userRecord);
       }

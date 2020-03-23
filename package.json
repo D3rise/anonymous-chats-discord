@@ -31,6 +31,8 @@
   },
   "devDependencies": {
     "@trongnd/ts-nodemon": "^1.0.3",
+    "prettier": "2.0.1",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.8.3"
   }
 }

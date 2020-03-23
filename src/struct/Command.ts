@@ -32,31 +32,31 @@ class CustomCommand extends Command {
 
   async before(message: Message) {
     this.user = await this.userRepository.findOne({
-      user_id: message.author.id
+      userId: message.author.id
     });
     i18n.setLocale(this.user.locale);
 
     this.chat = await this.chatRepository.findOne({
       where: [
         {
-          user1_id: this.user.user_id,
-          ended_at: null
+          user1Id: this.user.userId,
+          endedAt: null
         },
         {
-          user2_id: this.user.user_id,
-          ended_at: null
+          user2Id: this.user.userId,
+          endedAt: null
         }
       ]
     });
 
     if (this.chat) {
       this.userChatId =
-        this.chat.user1_id === message.author.id ? "user1_id" : "user2_id";
+        this.chat.user1Id === message.author.id ? "user1Id" : "user2Id";
     }
 
     if (message.guild) {
       this.guild = await this.guildRepository.findOne({
-        where: { discord_id: message.guild.id }
+        where: { discordId: message.guild.id }
       });
     }
   }

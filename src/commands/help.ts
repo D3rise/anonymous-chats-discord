@@ -24,13 +24,13 @@ class HelpCommand extends Command {
         message.guild !== null
           ? (
               await this.guildRepository.findOne({
-                where: { discord_id: message.guild.id }
+                where: { discordId: message.guild.id }
               })
             ).prefix
           : this.client.options.defaultPrefix;
       let temp = "";
       let cmds = 0;
-      let embed = new MessageEmbed();
+      const embed = new MessageEmbed();
       embed.setDescription(__("commands.help.DMprefixDisclaimer"));
       embed.setAuthor(
         __("commands.help.commandsList"),

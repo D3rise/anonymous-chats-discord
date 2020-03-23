@@ -8,9 +8,6 @@ import config from "../config.json";
 import i18n from "i18n";
 
 class MessageListener extends Listener {
-  chatRepository: Repository<Chat>;
-  messageRepository: Repository<MessageEntity>;
-  userRepository: Repository<User>;
   urlRegexp: RegExp;
 
   constructor() {
@@ -19,9 +16,6 @@ class MessageListener extends Listener {
       event: "message"
     });
 
-    this.chatRepository = getRepository(Chat);
-    this.messageRepository = getRepository(MessageEntity);
-    this.userRepository = getRepository(User);
     this.urlRegexp = new RegExp(
       "([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?"
     );
@@ -30,6 +24,7 @@ class MessageListener extends Listener {
   async exec(message: Message) {
     if (message.author.bot) return;
     if (message.guild !== null) return;
+
     if (
       message.content.startsWith("!") ||
       message.content.startsWith(this.client.options.defaultPrefix)
@@ -38,12 +33,13 @@ class MessageListener extends Listener {
 
     const chat = await this.chatRepository.findOne({
       where: [
-        { user1_id: message.author.id, ended_at: null },
-        { user2_id: message.author.id, ended_at: null }
+        { user1Id: message.author.id, endedAt: null },
+        { user2Id: message.author.id, endedAt: null }
       ],
       relations: ["messages"]
     });
-    if (!chat || chat.ended_at !== null) return;
+
+    if (!chat || chat.endedAt !== null) return;
 
     if (this.urlRegexp.test(message.content))
       return message.channel.send(
@@ -51,32 +47,34 @@ class MessageListener extends Listener {
       );
 
     const recipientId =
-      message.author.id === chat.user1_id ? chat.user2_id : chat.user1_id;
+      message.author.id === chat.user1Id ? chat.user2Id : chat.user1Id;
 
     const recipient = await this.client.users.fetch(recipientId);
+    recipient.dmChannel.stopTyping(true);
+
     recipient
       .send(message.content, { files: message.attachments.array() })
       .then(async msg => {
         const user = await this.userRepository.findOne({
           where: {
-            user_id: message.author.id
+            userId: message.author.id
           },
           relations: ["messages"]
         });
 
         const attachments = message.attachments.array();
-        let attachmentUris: string[] = [];
+        const attachmentUris: string[] = [];
         if (attachments.length !== 0) {
           attachments.forEach(attachment => {
             attachmentUris.push(attachment.proxyURL);
           });
         }
 
-        chat.last_message_date = new Date();
-        let messageRecord = await this.messageRepository.create({
-          discord_author_id: message.author.id,
-          discord_id: message.id,
-          sent_id: msg.id,
+        chat.lastMessageDate = new Date();
+        const messageRecord = await this.messageRepository.create({
+          discordAuthorId: message.author.id,
+          discordId: message.id,
+          sentId: msg.id,
           content: message.content,
           attachmentUris
         });
@@ -88,6 +86,7 @@ class MessageListener extends Listener {
         await this.chatRepository.save(chat);
         await this.userRepository.save(user);
       });
+    await this.client.updateMessageCount();
   }
 }
 

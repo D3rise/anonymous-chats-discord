@@ -13,16 +13,16 @@ export class Chat {
   id: number;
 
   @Column()
-  user1_id: string;
+  user1Id: string;
 
   @Column()
-  user2_id: string;
+  user2Id: string;
 
   @Column({ default: new Date() })
-  started_at: Date;
+  startedAt: Date;
 
   @Column({ type: "timestamp with time zone", nullable: true })
-  ended_at: Date;
+  endedAt: Date;
 
   @Column("simple-array", { default: [] })
   deanonApprovalUsers: string[];
@@ -31,11 +31,8 @@ export class Chat {
   locale: string;
 
   @Column({ type: "timestamp with time zone", nullable: true })
-  last_message_date: Date;
+  lastMessageDate: Date;
 
-  @OneToMany(
-    type => Message,
-    message => message.chat
-  )
+  @OneToMany(type => Message, message => message.chat)
   messages: Message[];
 }

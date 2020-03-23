@@ -10,15 +10,12 @@ export class Report {
   @Column({ type: "timestamp with time zone", nullable: true })
   date: Date;
 
-  @ManyToOne(
-    () => User,
-    user => user.reports
-  )
+  @ManyToOne(() => User, user => user.reports)
   user: User;
 
   @ManyToOne(() => Chat)
   chat: Chat;
 
   @Column()
-  author_discord_id: string;
+  authorDiscordId: string;
 }

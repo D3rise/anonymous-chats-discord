@@ -18,6 +18,7 @@ class PingCommand extends Command {
       __(`commands.ping.timeForMessage`, {
         timeDiff: String(timeDiff)
       }) +
+        "\n" +
         __(`commands.ping.timeForAPI`, {
           ping: String(Math.round(this.client.ws.ping))
         })

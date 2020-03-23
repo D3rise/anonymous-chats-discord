@@ -4,12 +4,12 @@
   "defaultLocale": "en",
   "contactServerInvite": "https://discord.gg/muNxAMV",
   "contactServerId": "690456206548008970",
-  "searchCountChannelId": "672141872222830594",
+  "searchCountChannelId": "691585994444767262",
   "searchCountText": "In search: ",
-  "chatsCountChannelId": "672141901562118153",
+  "chatsCountChannelId": "691585948076605491",
   "chatsCountText": "Chats: ",
-  "messagesCountChannelId": "672141847220584449",
+  "messagesCountChannelId": "691586030238957588",
   "messagesCountText": "Messages: ",
-  "interlocutorsChannelId": "672145109973729286",
+  "interlocutorsChannelId": "691585916900212766",
   "interlocutorsChannelText": "Interlocutors: "
 }

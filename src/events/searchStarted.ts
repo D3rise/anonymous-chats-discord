@@ -1,23 +1,15 @@
 import Listener from "../struct/Listener";
-import { User, MessageEmbed } from "discord.js";
+import { User } from "discord.js";
 import { User as UserEntity } from "../entity/User.entity";
 import { Search } from "../entity/Search.entity";
-import { Chat } from "../entity/Chat.entity";
-import { getRepository, Repository, Not } from "typeorm";
 import i18n from "i18n";
 
 class SearchStartedListener extends Listener {
-  searchRepository: Repository<Search>;
-  chatRepository: Repository<Chat>;
-
   constructor() {
     super("searchStarted", {
       emitter: "client",
       event: "searchStarted"
     });
-
-    this.searchRepository = getRepository(Search);
-    this.chatRepository = getRepository(Chat);
   }
 
   async exec(user: User, author: UserEntity, search: Search) {
@@ -48,8 +40,8 @@ class SearchStartedListener extends Listener {
       await this.searchRepository.delete(matchedSearch);
 
       const chat = this.chatRepository.create({
-        user1_id: search.discord_user_id,
-        user2_id: matchedSearch.discord_user_id,
+        user1Id: search.discordUserId,
+        user2Id: matchedSearch.discordUserId,
         locale: author.locale
       });
       await this.chatRepository.save(chat);
@@ -62,8 +54,10 @@ class SearchStartedListener extends Listener {
       );
 
       this.client.users
-        .filter(u => u.id === user.id || u.id === matchedSearch.discord_user_id)
-        .each(user => user.send(notificationEmbed));
+        .filter(u => u.id === user.id || u.id === matchedSearch.discordUserId)
+        .each(interlocutorUser => interlocutorUser.send(notificationEmbed));
+
+      this.client.emit("chatStarted", chat);
     }
   }
 }

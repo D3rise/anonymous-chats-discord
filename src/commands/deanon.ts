@@ -27,10 +27,10 @@ class DeanonCommand extends Command {
     }
 
     const user2 = await this.client.users.fetch(
-      this.userChatId === "user1_id" ? this.chat.user2_id : this.chat.user1_id
+      this.userChatId === "user1Id" ? this.chat.user2Id : this.chat.user1Id
     );
 
-    if (this.chat.deanonApprovalUsers.length == 2) {
+    if (this.chat.deanonApprovalUsers.length === 2) {
       this.chat.deanonApprovalUsers.push(message.author.id);
       await this.chatRepository.save(this.chat);
 

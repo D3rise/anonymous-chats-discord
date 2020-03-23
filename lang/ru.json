@@ -11,6 +11,7 @@
   "errors.youHaveBeenSendedReportInThisChat": "Вы уже отправляли жалобу в этом чате!",
   "errors.cantSendMessage": "К сожалению, бот не может отправить вам сообщение.\nПроверьте свои настройки конфиденциальности.",
   "errors.noLinksInTheChat": "В чате нельзя отправлять ссылки!",
+  "errors.searchTimeout": "К сожалению, собеседник не был найден в течении 15 минут.\nЧтобы начать поиск заново, напишите `n!search`",
   "errors.youAlreadyVotedForDeanon": "Вы уже проголосовали за раскрытие ников!",
   "errors.chatTimeout": "Чат был окончен из-за отсутствия активности в течении 5 минут.",
   "inhibitors.ban.banReason": "бан",

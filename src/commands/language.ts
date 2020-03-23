@@ -15,7 +15,6 @@ class LanguageCommand extends Command {
         }
       ]
     });
-    this.user;
   }
 
   async exec(message: Message, args: any) {

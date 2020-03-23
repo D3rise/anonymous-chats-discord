@@ -18,7 +18,7 @@ export class User {
   id: number;
 
   @Column({ unique: true })
-  user_id: string;
+  userId: string;
 
   @Column("simple-json", { default: { preferedGender: "none" } })
   config: { preferedGender: string; guild: string };
@@ -32,24 +32,14 @@ export class User {
   @Column({ enum: ["ru", "en"], default: "ru" })
   locale: string;
 
-  @OneToOne(
-    type => Search,
-    search => search.user,
-    {
-      cascade: false
-    }
-  )
+  @OneToOne(type => Search, search => search.user, {
+    cascade: false
+  })
   currentSearch: Search;
 
-  @OneToMany(
-    () => Report,
-    report => report.user
-  )
+  @OneToMany(() => Report, report => report.user)
   reports: Report[];
 
-  @OneToMany(
-    () => Message,
-    message => message.author_user
-  )
+  @OneToMany(() => Message, message => message.authorUser)
   messages: Message[];
 }

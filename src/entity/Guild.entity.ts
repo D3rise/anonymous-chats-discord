@@ -7,7 +7,7 @@ export class Guild {
   id: number;
 
   @Column()
-  discord_id: string;
+  discordId: string;
 
   @Column({ default: config.defaultPrefix })
   prefix?: string;

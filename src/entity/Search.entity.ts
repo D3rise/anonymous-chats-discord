@@ -13,10 +13,13 @@ export class Search {
   id: number;
 
   @Column({ unique: true })
-  discord_user_id: string; // Discord ID of the user that started the search
+  discordUserId: string; // Discord ID of the user that started the search
 
   @Column({ type: "timestamp with time zone" })
-  started_at: Date;
+  startedAt: Date;
+
+  @Column({ nullable: true })
+  guildId: string;
 
   @OneToOne(
     type => User,

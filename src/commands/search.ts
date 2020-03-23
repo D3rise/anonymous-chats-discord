@@ -2,7 +2,9 @@ import Command from "../struct/Command";
 import moment from "moment-timezone";
 import momentDurationFormat from "moment-duration-format";
 import { Message, MessageEmbed, MessageEmbedOptions } from "discord.js";
+/* tslint:disable */
 momentDurationFormat(require("moment-timezone"));
+/* tslint:enable */
 import { __ } from "i18n";
 
 class SearchCommand extends Command {
@@ -25,23 +27,18 @@ class SearchCommand extends Command {
         reason: __("commands.search.reasonForMessageDelete")
       });
 
-    const chat = await this.chatRepository.findOne({
-      where: [
-        { user1_id: message.author.id, ended_at: null },
-        { user2_id: message.author.id, ended_at: null }
-      ]
-    });
+    const chat = this.chat;
     if (chat)
       return message.author
         .send(this.client.errorEmbed(__("errors.youAlreadyInTheChat")))
         .catch(handleMessageError);
 
     let userSearchRecord = await this.searchRepository.findOne({
-      discord_user_id: message.author.id
+      discordUserId: message.author.id
     });
 
     if (userSearchRecord) {
-      const diff = moment().diff(moment(userSearchRecord.started_at));
+      const diff = moment().diff(moment(userSearchRecord.startedAt));
 
       await this.searchRepository.delete(userSearchRecord);
       return message.author
@@ -58,8 +55,8 @@ class SearchCommand extends Command {
     }
 
     userSearchRecord = this.searchRepository.create({
-      discord_user_id: message.author.id,
-      started_at: new Date(),
+      discordUserId: message.author.id,
+      startedAt: new Date(),
       user: this.user
     });
     await this.searchRepository.save(userSearchRecord);

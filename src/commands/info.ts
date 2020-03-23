@@ -12,7 +12,7 @@ class InfoCommand extends Command {
   }
 
   async exec(message: Message) {
-    const dialogueCount = await this.chatRepository.find({ ended_at: null });
+    const dialogueCount = await this.chatRepository.find({ endedAt: null });
 
     return message.channel.send(
       new MessageEmbed()
