@@ -86,7 +86,7 @@
   "commands.config.valueHasChanged": "Value of setting \"{{option}}\" is now equals: \"{{value}}\"",
   "commands.invite.desc": "Get useful bot links",
   "commands.invite.embedTitle": "Anonymous chat are now in Discord!",
-  "commands.invite.embedDescription": "Among the features are: ```md\n1. Ability to send files\n2. Ability to change and delete messages\n3. Search by gender (only after 20,000 users!)\n4. Search for interlocutors on the server\n5. Multilanguage```\nInvite a bot to your server: **[click](https://discordapp.com/api/oauth2/authorize?client_id={{botId}}&permissions=388160&scope=bot)**\nCreator's website: **[click](https://{{devSite}}/)**\nLink for donations: **[click](https://www.patreon.com/bePatron?u={{patreonId}})**\nSupport server invite: [click](https://discord.gg/{{supportServer}})",
+  "commands.invite.embedDescription": "Among the features are: ```md\n1. Ability to send files\n2. Ability to change and delete messages\n3. Search by gender (only after 20,000 users!)\n4. Search for interlocutors on the server\n5. Multilanguage```\nInvite a bot to your server: **[click](https://discordapp.com/api/oauth2/authorize?client_id={{botId}}&permissions=388160&scope=bot)**\nCreator's website: **[click](https://{{devSite}}/)**\nLink for donations: **[click](https://www.patreon.com/bePatron?u={{patreonId}})**\nSupport server invite: **[click](https://discord.gg/{{supportServer}})**",
   "commands.invite.embedFooter": "Version of the bot: {{version}}",
   "commands.configGuild.desc": "Get or change settings of this server",
   "commands.configGuild.guildSearchOptionName": "Search over the server is allowed",
