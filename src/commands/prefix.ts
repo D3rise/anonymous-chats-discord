@@ -6,7 +6,7 @@ class PrefixCommand extends Command {
   constructor() {
     super("prefix", {
       aliases: ["prefix"],
-      category: "categories.bot",
+      category: "categories.config",
       description: "commands.prefix.desc",
       args: [
         {

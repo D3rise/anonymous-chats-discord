@@ -6,7 +6,7 @@ class LanguageCommand extends Command {
   constructor() {
     super("language", {
       aliases: ["language", "set-language"],
-      category: "categories.bot",
+      category: "categories.config",
       description: "commands.language.desc",
       args: [
         {
