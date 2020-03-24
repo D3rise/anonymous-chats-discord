@@ -29,6 +29,8 @@ interface ICustomClientOptions {
   defaultPrefix: string;
   defaultLocale?: string;
   contactServerInvite?: string;
+  devSite?: string;
+  patreonId?: string;
 }
 
 class CustomClient extends AkairoClient {
@@ -48,6 +50,9 @@ class CustomClient extends AkairoClient {
   ) {
     super(options, clientOptions);
     this.options.defaultLocale = config.defaultLocale;
+    this.options.devSite = config.devSite;
+    this.options.patreonId = config.patreonId;
+    this.options.contactServerInvite = config.contactServerInvite;
 
     log4js.configure({
       appenders: {
@@ -57,7 +62,6 @@ class CustomClient extends AkairoClient {
         default: { appenders: ["out"], level: "debug" }
       }
     });
-    this.contactServerInvite = config.contactServerInvite;
 
     i18n.configure({
       directory: path.join(__dirname, "..", "..", "lang"),

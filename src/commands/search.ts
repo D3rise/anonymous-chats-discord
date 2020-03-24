@@ -22,6 +22,12 @@ class SearchCommand extends Command {
         this.client.errorEmbed(__("errors.cantSendMessage"))
       );
 
+    if (!this.guild.config.guildSearch && this.user.config.guild) {
+      return message.channel.send(
+        this.client.errorEmbed(__("errors.searchOverThisGuildAreNotAllowed"))
+      );
+    }
+
     if (message.guild !== null)
       message.delete({
         reason: __("commands.search.reasonForMessageDelete")

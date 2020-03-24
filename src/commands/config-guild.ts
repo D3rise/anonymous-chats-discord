@@ -1,12 +1,12 @@
-import { Message } from "discord.js";
 import Command from "../struct/Command";
+import { Message } from "discord.js";
 import { __ } from "i18n";
 
-class ConfigCommand extends Command {
+class ConfigGuildCommand extends Command {
   constructor() {
-    super("config", {
-      aliases: ["config"],
-      description: "commands.config.desc",
+    super("config-guild", {
+      aliases: ["config-guild"],
+      description: "commands.configGuild.desc",
       category: "categories.config",
       args: [
         {
@@ -23,42 +23,18 @@ class ConfigCommand extends Command {
   }
 
   async exec(message: Message, args: any) {
-    let prefix = this.client.options.defaultPrefix;
-
-    if (message.guild) {
-      prefix = this.guild.prefix;
+    if (!message.guild) {
+      return message.channel.send(
+        this.client.errorEmbed(__("errors.commandCanBeUsedOnlyInGuild"))
+      );
     }
 
+    const prefix = this.guild.prefix;
     const avaliableOptions = [
       {
         id: 1,
-        db: "gender",
-        name: __("commands.config.genderOption")
-      },
-      {
-        id: 2,
-        db: "preferredGender",
-        name: __("commands.config.prefferedGender")
-      },
-      {
-        id: 3,
-        db: "guild",
-        name: __("commands.config.guild")
-      }
-    ];
-
-    const avaliableGenders = [
-      {
-        id: "male",
-        name: __("other.maleGender")
-      },
-      {
-        id: "female",
-        name: __("other.femaleGender")
-      },
-      {
-        id: "none",
-        name: __("other.noneGender")
+        db: "guildSearch",
+        name: __("commands.configGuild.guildSearchOptionName")
       }
     ];
 
@@ -81,7 +57,7 @@ class ConfigCommand extends Command {
           __("commands.config.optionField", {
             name: opt.name,
             id: String(opt.id),
-            value: __(this.client.humanizeSetting(this.user.config[opt.db]))
+            value: __(this.client.humanizeSetting(this.guild.config[opt.db]))
           }) + "\n";
       });
 
@@ -90,11 +66,17 @@ class ConfigCommand extends Command {
           __("commands.config.currentConfig", { list: optionsList })
         )
         .setFooter(
-          __("commands.config.howToSetNewValue", {
+          __("commands.configGuild.howToSetNewValue", {
             prefix
           })
         );
       return message.channel.send(optionListEmbed);
+    }
+
+    if (!message.member.hasPermission("MANAGE_GUILD")) {
+      return message.channel.send(
+        this.client.errorEmbed(__("errors.insufficientPermissions"))
+      );
     }
 
     const option = avaliableOptions.find(
@@ -105,46 +87,30 @@ class ConfigCommand extends Command {
         this.client.errorEmbed(__("errors.theseOptionAreNotAvaliable"))
       );
     }
-
-    const optionDbName = option.db;
+    const optionDb = option.db;
     let newValue: any;
-    switch (option.id) {
-      case 1:
-      case 2: {
-        // TODO: REMOVE WHEN USERS COUNT WILL BE MORE THAN 20000
-        return message.channel.send(
-          this.client.errorEmbed(
-            __("errors.functionNotAvaliableInviteBot", { prefix })
-          )
-        );
 
-        newValue = avaliableGenders.find(
-          avaliableGender =>
-            avaliableGender.name.toLowerCase() === args.newValue.toLowerCase()
-        );
-        if (!newValue)
-          return message.channel.send(
-            this.client.errorEmbed(__("errors.noSuchGender"))
-          );
-        break;
-      }
-      case 3: {
+    switch (option.id) {
+      case 1: {
         const errorEmbed = this.client.errorEmbed(
           __("errors.noSuchGuildSearchBoolean")
         );
         if (!args.newValue) {
           return message.channel.send(errorEmbed);
         }
+
         newValue = avaliableBoolean.find(
           aBool => aBool.name.toLowerCase() === args.newValue.toLowerCase()
         ); // aBool is avaliableBoolean
 
-        if (!newValue) return message.channel.send(errorEmbed);
+        if (!newValue) {
+          return message.channel.send(errorEmbed);
+        }
       }
     }
 
-    this.user.config[optionDbName] = newValue.id;
-    await this.userRepository.save(this.user);
+    this.guild.config[optionDb] = newValue.id;
+    await this.guildRepository.save(this.guild);
 
     const embed = this.client.successEmbed(
       __("commands.config.valueHasChanged", {
@@ -156,4 +122,4 @@ class ConfigCommand extends Command {
   }
 }
 
-export default ConfigCommand;
+export default ConfigGuildCommand;

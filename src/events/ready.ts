@@ -59,7 +59,8 @@ class ReadyListener extends Listener {
     ]; 
     */
 
-    setInterval(() => {
+    setInterval(async () => {
+      const count = await this.searchRepository.count();
       this.client.user.setActivity({
         name: i18n.__(
           {
@@ -68,6 +69,7 @@ class ReadyListener extends Listener {
           },
           {
             guilds: String(this.client.guilds.size),
+            searchCount: String(count),
             prefix
           }
         ),
