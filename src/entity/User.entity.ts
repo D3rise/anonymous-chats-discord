@@ -34,7 +34,7 @@ export class User {
   @Column({ default: false })
   banned: boolean;
 
-  @Column({ enum: i18n.getLocales(), default: "ru" })
+  @Column({ enum: i18n.getLocales(), default: "en" })
   locale: string;
 
   @OneToOne(type => Search, search => search.user, {
