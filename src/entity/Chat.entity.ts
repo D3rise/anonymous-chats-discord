@@ -3,7 +3,7 @@ import {
   Column,
   PrimaryGeneratedColumn,
   OneToMany,
-  getRepository
+  getRepository,
 } from "typeorm";
 import { Message } from "./Message.entity";
 
@@ -18,7 +18,7 @@ export class Chat {
   @Column()
   user2Id: string;
 
-  @Column({ default: new Date() })
+  @Column({ type: "timestamp with time zone" })
   startedAt: Date;
 
   @Column({ type: "timestamp with time zone", nullable: true })
@@ -33,6 +33,6 @@ export class Chat {
   @Column({ type: "timestamp with time zone", nullable: true })
   lastMessageDate: Date;
 
-  @OneToMany(type => Message, message => message.chat)
+  @OneToMany((type) => Message, (message) => message.chat)
   messages: Message[];
 }

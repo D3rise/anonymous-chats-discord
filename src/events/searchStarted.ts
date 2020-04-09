@@ -54,6 +54,7 @@ class SearchStartedListener extends Listener {
         user1Id: search.discordUserId,
         user2Id: matchedSearch.discordUserId,
         locale: author.locale,
+        startedAt: new Date(),
       });
       await this.chatRepository.save(chat);
 

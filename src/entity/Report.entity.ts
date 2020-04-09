@@ -7,10 +7,10 @@ export class Report {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "timestamp with time zone", nullable: true })
+  @Column({ type: "timestamp with time zone" })
   date: Date;
 
-  @ManyToOne(() => User, user => user.reports)
+  @ManyToOne(() => User, (user) => user.reports)
   user: User;
 
   @ManyToOne(() => Chat)

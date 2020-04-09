@@ -107,9 +107,9 @@ class CustomClient extends AkairoClient {
           `age(current_timestamp, last_message_date) > interval '5 minutes'`
         )
         .andWhere(`ended_at IS NULL`)
-        // .orWhere(`age(current_timestamp, started_at) > interval '5 minutes'`)
-        // .andWhere(`last_message_date IS NULL`)
-        // .andWhere(`ended_at IS NULL`)
+        .orWhere(`age(current_timestamp, started_at) > interval '5 minutes'`)
+        .andWhere(`last_message_date IS NULL`)
+        .andWhere(`ended_at IS NULL`)
         .getMany();
 
       expiredChats.forEach((chat) => {

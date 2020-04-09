@@ -80,6 +80,7 @@ class MessageListener extends Listener {
           sentId: msg.id,
           content: message.content,
           attachmentUris,
+          createdAt: new Date(),
         });
 
         user.messages.push(messageRecord);

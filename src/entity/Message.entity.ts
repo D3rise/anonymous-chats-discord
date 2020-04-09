@@ -3,7 +3,7 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
-  JoinColumn
+  JoinColumn,
 } from "typeorm";
 import { Chat } from "./Chat.entity";
 import { User } from "./User.entity";
@@ -22,7 +22,7 @@ export class Message {
   @Column()
   sentId: string;
 
-  @ManyToOne(() => User, user => user.messages)
+  @ManyToOne(() => User, (user) => user.messages)
   authorUser: User;
 
   @Column({ nullable: true })
@@ -31,9 +31,9 @@ export class Message {
   @Column("simple-array", { default: [], nullable: true })
   attachmentUris: string[];
 
-  @Column({ default: new Date() })
+  @Column({ type: "timestamp with time zone" })
   createdAt: Date;
 
-  @ManyToOne(() => Chat, chat => chat.messages)
+  @ManyToOne(() => Chat, (chat) => chat.messages)
   chat: Chat;
 }
