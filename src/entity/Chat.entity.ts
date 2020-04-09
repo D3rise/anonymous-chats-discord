@@ -18,7 +18,7 @@ export class Chat {
   @Column()
   user2Id: string;
 
-  @Column({ type: "timestamp with time zone" })
+  @Column({ type: "timestamp with time zone", nullable: true })
   startedAt: Date;
 
   @Column({ type: "timestamp with time zone", nullable: true })
