@@ -3,14 +3,15 @@ import {
   AkairoOptions,
   CommandHandler,
   ListenerHandler,
-  InhibitorHandler
+  InhibitorHandler,
 } from "discord-akairo";
 import {
   ClientOptions,
   Message,
   MessageEmbedOptions,
   MessageEmbed,
-  GuildChannel
+  GuildChannel,
+  DiscordAPIError,
 } from "discord.js";
 import { createConnection, Connection, getRepository } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
@@ -19,6 +20,7 @@ import { Message as MessageEntity } from "../entity/Message.entity";
 import path from "path";
 import dotenv from "dotenv";
 import log4js from "log4js";
+import DBL from "dblapi.js";
 import { Chat } from "../entity/Chat.entity";
 import * as config from "../config.json";
 import i18n, { __ } from "i18n";
@@ -43,6 +45,7 @@ class CustomClient extends AkairoClient {
   public commandHandler: CommandHandler;
   private listenerHandler: ListenerHandler;
   private inhibitorHandler: InhibitorHandler;
+  private dbl: DBL;
 
   constructor(
     options?: AkairoOptions & ClientOptions & ICustomClientOptions,
@@ -56,18 +59,18 @@ class CustomClient extends AkairoClient {
 
     log4js.configure({
       appenders: {
-        out: { type: "stdout" }
+        out: { type: "stdout" },
       },
       categories: {
-        default: { appenders: ["out"], level: "debug" }
-      }
+        default: { appenders: ["out"], level: "debug" },
+      },
     });
 
     i18n.configure({
       directory: path.join(__dirname, "..", "..", "lang"),
       defaultLocale: process.env.LOCALE,
       locales: ["ru", "en"],
-      register: global
+      register: global,
     });
 
     this.logger = log4js.getLogger(
@@ -81,28 +84,50 @@ class CustomClient extends AkairoClient {
       type: "postgres",
       url: process.env.POSTGRES_URL,
       entities: [path.join(__dirname, "..", "entity", "*.entity.{ts,js}")],
-      namingStrategy: new SnakeNamingStrategy()
+      namingStrategy: new SnakeNamingStrategy(),
     });
     await this.db.synchronize();
 
+    if (process.env.DBL_TOKEN) {
+      this.dbl = new DBL(process.env.DBL_TOKEN, this);
+      this.dbl.on("error", (error) => {
+        this.logger.error(`Error while connecting to DBL:\n${error}`);
+      });
+      this.dbl.on("posted", () => {
+        this.logger.info("Successfully posted stats to DBL");
+      });
+    }
+
     setInterval(async () => {
       const chatRepository = getRepository(Chat);
-      const expiredChats: Chat[] = await chatRepository.query(
-        "SELECT * FROM public.chat WHERE age(current_timestamp, last_message_date) > interval '5 minutes' AND ended_at IS NULL"
-      );
-      expiredChats.forEach(chat => {
-        chatRepository.findOne(chat.id).then(expiredChat => {
+
+      const expiredChats = await chatRepository
+        .createQueryBuilder("chat")
+        .where(
+          `age(current_timestamp, last_message_date) > interval '5 minutes'`
+        )
+        .andWhere(`ended_at IS NULL`)
+        .orWhere(`age(current_timestamp, started_at) > interval '5 minutes'`)
+        .andWhere(`last_message_date IS NULL`)
+        .andWhere(`ended_at IS NULL`)
+        .getMany();
+
+      expiredChats.forEach((chat) => {
+        chatRepository.findOne(chat.id).then((expiredChat) => {
           expiredChat.endedAt = new Date();
           chatRepository.save(expiredChat);
         });
 
         const users = [chat.user1Id, chat.user2Id];
-        users.forEach(async userId => {
+        users.forEach(async (userId) => {
           const embed = this.errorEmbed(
             __({ phrase: "errors.chatTimeout", locale: chat.locale })
           );
           const user = await this.users.fetch(userId);
-          user.send(embed);
+          user.send(embed).catch((e: DiscordAPIError) => {
+            if (e.name === "Cannot send messages to this user")
+              return this.logger.error(`Cannot send messages to ${userId}`);
+          });
         });
       });
 
@@ -113,13 +138,13 @@ class CustomClient extends AkairoClient {
         .where("age(current_timestamp, started_at) > interval '15 minutes'")
         .getMany();
 
-      expiredSearches.forEach(async expiredSearch => {
+      expiredSearches.forEach(async (expiredSearch) => {
         await searchRepository.delete(expiredSearch);
         const searcher = await this.users.fetch(expiredSearch.discordUserId);
         const embed = this.errorEmbed(
           __({
             phrase: "errors.searchTimeout",
-            locale: expiredSearch.user.locale
+            locale: expiredSearch.user.locale,
           })
         );
 
@@ -136,28 +161,29 @@ class CustomClient extends AkairoClient {
     }, 1000 * 10);
     this.logger.info("Connected to DB");
 
-    this.commandHandler = new CommandHandler(this, {
+    this.commandHandler = await new CommandHandler(this, {
       directory: path.join(__dirname, "..", "commands"),
       prefix: async (message: Message) => {
         if (message.guild) {
           const guildRecord = await this.db
             .getRepository(Guild)
             .findOne({ discordId: message.guild.id });
+          if (!guildRecord) return this.options.defaultPrefix;
 
           return guildRecord.prefix;
         }
 
         return this.options.defaultPrefix;
       },
-      allowMention: true
+      allowMention: true,
     });
 
     this.listenerHandler = new ListenerHandler(this, {
-      directory: path.join(__dirname, "..", "events")
+      directory: path.join(__dirname, "..", "events"),
     });
 
     this.inhibitorHandler = new InhibitorHandler(this, {
-      directory: path.join(__dirname, "..", "inhibitors")
+      directory: path.join(__dirname, "..", "inhibitors"),
     });
 
     this.commandHandler.useListenerHandler(this.listenerHandler);

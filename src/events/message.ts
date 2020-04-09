@@ -13,7 +13,7 @@ class MessageListener extends Listener {
   constructor() {
     super("message", {
       emitter: "client",
-      event: "message"
+      event: "message",
     });
 
     this.urlRegexp = new RegExp(
@@ -34,9 +34,9 @@ class MessageListener extends Listener {
     const chat = await this.chatRepository.findOne({
       where: [
         { user1Id: message.author.id, endedAt: null },
-        { user2Id: message.author.id, endedAt: null }
+        { user2Id: message.author.id, endedAt: null },
       ],
-      relations: ["messages"]
+      relations: ["messages"],
     });
 
     if (!chat || chat.endedAt !== null) return;
@@ -50,22 +50,25 @@ class MessageListener extends Listener {
       message.author.id === chat.user1Id ? chat.user2Id : chat.user1Id;
 
     const recipient = await this.client.users.fetch(recipientId);
+    if (!recipient) {
+      return this.handleUserNotAvaliable(message, chat);
+    }
     recipient.dmChannel.stopTyping(true);
 
     recipient
       .send(message.content, { files: message.attachments.array() })
-      .then(async msg => {
+      .then(async (msg) => {
         const user = await this.userRepository.findOne({
           where: {
-            userId: message.author.id
+            userId: message.author.id,
           },
-          relations: ["messages"]
+          relations: ["messages"],
         });
 
         const attachments = message.attachments.array();
         const attachmentUris: string[] = [];
         if (attachments.length !== 0) {
-          attachments.forEach(attachment => {
+          attachments.forEach((attachment) => {
             attachmentUris.push(attachment.proxyURL);
           });
         }
@@ -76,7 +79,7 @@ class MessageListener extends Listener {
           discordId: message.id,
           sentId: msg.id,
           content: message.content,
-          attachmentUris
+          attachmentUris,
         });
 
         user.messages.push(messageRecord);
@@ -85,8 +88,19 @@ class MessageListener extends Listener {
         await this.messageRepository.save(messageRecord);
         await this.chatRepository.save(chat);
         await this.userRepository.save(user);
+      })
+      .catch((e) => {
+        return this.handleUserNotAvaliable(message, chat);
       });
     await this.client.updateMessageCount();
+  }
+
+  async handleUserNotAvaliable(message: Message, chat: Chat) {
+    chat.endedAt = new Date();
+    this.chatRepository.save(chat);
+    return message.channel.send(
+      this.client.errorEmbed(i18n.__("errors.userNotAvaliable"))
+    );
   }
 }
 

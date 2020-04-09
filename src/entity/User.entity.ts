@@ -4,12 +4,12 @@ import {
   Entity,
   OneToMany,
   OneToOne,
-  JoinColumn
 } from "typeorm";
 import { Report } from "./Report.entity";
 import { Message } from "./Message.entity";
 import { Search } from "./Search.entity";
 import i18n from "i18n";
+import config from "../config.json";
 
 const genderEnum = ["unspecified", "female", "male"];
 
@@ -22,7 +22,7 @@ export class User {
   userId: string;
 
   @Column("jsonb", {
-    default: { gender: "none", preferredGender: "none", guild: false }
+    default: { gender: "none", preferredGender: "none", guild: false },
   })
   config: {
     [key: string]: any;
@@ -34,17 +34,17 @@ export class User {
   @Column({ default: false })
   banned: boolean;
 
-  @Column({ enum: i18n.getLocales(), default: "en" })
+  @Column({ enum: i18n.getLocales(), default: config.defaultLocale })
   locale: string;
 
-  @OneToOne(type => Search, search => search.user, {
-    cascade: false
+  @OneToOne((type) => Search, (search) => search.user, {
+    cascade: false,
   })
   currentSearch: Search;
 
-  @OneToMany(() => Report, report => report.user)
+  @OneToMany(() => Report, (report) => report.user)
   reports: Report[];
 
-  @OneToMany(() => Message, message => message.authorUser)
+  @OneToMany(() => Message, (message) => message.authorUser)
   messages: Message[];
 }

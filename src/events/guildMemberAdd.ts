@@ -7,7 +7,7 @@ class GuildMemberAddListener extends Listener {
   constructor() {
     super("guildMemberAdd", {
       event: "guildMemberAdd",
-      emitter: "client"
+      emitter: "client",
     });
 
     this.userRepository = getRepository(User);
@@ -15,14 +15,16 @@ class GuildMemberAddListener extends Listener {
 
   async exec(member: GuildMember) {
     if (member.user.bot) return;
-    this.userRepository.findOne({ userId: member.id }).then(user => {
+    this.userRepository.findOne({ userId: member.id }).then((user) => {
       if (!user) {
         const userRecord = this.userRepository.create({
-          userId: member.id
+          userId: member.id,
         });
         this.userRepository.save(userRecord);
       }
     });
+
+    this.client.logger.debug(`Created user record for ${member.user.id}`);
   }
 }
 

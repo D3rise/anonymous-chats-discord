@@ -5,12 +5,13 @@ class ChatStartedListener extends Listener {
   constructor() {
     super("chatStarted", {
       event: "chatStarted",
-      emitter: "client"
+      emitter: "client",
     });
   }
 
   async exec(chat: Chat) {
     await this.client.updateChatCount();
+    this.client.logger.debug(`Started new chat with id ${chat.id}`);
   }
 }
 

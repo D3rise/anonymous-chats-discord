@@ -7,7 +7,7 @@ class InfoCommand extends Command {
     super("info", {
       aliases: ["stats", "info"],
       category: "categories.bot",
-      description: "commands.info.desc"
+      description: "commands.info.desc",
     });
   }
 
@@ -37,10 +37,14 @@ class InfoCommand extends Command {
           dialogueCount.length * 2,
           true
         )
-        .addField(__("commands.info.shardId"), this.client.shard.ids[0], true)
+        .addField(
+          __("commands.info.shardId"),
+          this.client.shard.ids[0] + 1,
+          true
+        )
         .setDescription(
           __(`commands.info.inviteMeToYourServer`, {
-            botId: this.client.user.id
+            botId: this.client.user.id,
           })
         )
     );
@@ -48,7 +52,7 @@ class InfoCommand extends Command {
 
   get users() {
     let users = 0;
-    this.client.guilds.each(g => (users += g.memberCount));
+    this.client.guilds.each((g) => (users += g.memberCount));
     return users;
   }
 }
