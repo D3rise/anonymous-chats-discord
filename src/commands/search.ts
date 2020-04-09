@@ -12,11 +12,26 @@ class SearchCommand extends Command {
     super("поиск", {
       aliases: ["search"],
       category: "categories.chat",
-      description: "commands.search.desc"
+      description: "commands.search.desc",
     });
   }
 
   async exec(message: Message) {
+    const avaliableGenders = [
+      {
+        id: "male",
+        name: "other.maleGender",
+      },
+      {
+        id: "female",
+        name: "other.femaleGender",
+      },
+      {
+        id: "none",
+        name: "other.noneGender",
+      },
+    ];
+
     const handleMessageError = () =>
       message.channel.send(
         this.client.errorEmbed(__("errors.cantSendMessage"))
@@ -30,7 +45,7 @@ class SearchCommand extends Command {
       }
 
       message.delete({
-        reason: __("commands.search.reasonForMessageDelete")
+        reason: __("commands.search.reasonForMessageDelete"),
       });
     }
 
@@ -41,7 +56,7 @@ class SearchCommand extends Command {
         .catch(handleMessageError);
 
     let userSearchRecord = await this.searchRepository.findOne({
-      discordUserId: message.author.id
+      discordUserId: message.author.id,
     });
 
     if (userSearchRecord) {
@@ -54,7 +69,7 @@ class SearchCommand extends Command {
             __(`commands.search.searchHasBeenCancelled`, {
               waitingTime: moment
                 .duration(diff, "milliseconds")
-                .format(__("other.timeFormat"))
+                .format(__("other.timeFormat")),
             })
           )
         )
@@ -65,7 +80,7 @@ class SearchCommand extends Command {
       return message.channel.send(
         this.client.errorEmbed(
           __("errors.guildSearchUnavaliableChangeTheSetting", {
-            prefix: this.client.options.defaultPrefix
+            prefix: this.client.options.defaultPrefix,
           })
         )
       );
@@ -74,7 +89,7 @@ class SearchCommand extends Command {
     userSearchRecord = this.searchRepository.create({
       discordUserId: message.author.id,
       startedAt: new Date(),
-      user: this.user
+      user: this.user,
     });
 
     if (message.guild) {
@@ -87,7 +102,15 @@ class SearchCommand extends Command {
       .send(
         this.client.successEmbed(
           __("commands.search.searchHasBeenStarted", {
-            count: String((await this.searchRepository.count()) - 1)
+            count: String((await this.searchRepository.count()) - 1),
+            prefferedGender: __(
+              avaliableGenders.find(
+                (gender) => gender.id === this.user.config.preferredGender
+              ).name
+            ),
+            searchOnlyOverGuild: this.user.config.guild
+              ? message.guild.name
+              : __(`other.no`),
           })
         )
       )

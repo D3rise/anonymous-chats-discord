@@ -43,7 +43,9 @@ class MessageListener extends Listener {
 
     if (this.urlRegexp.test(message.content))
       return message.channel.send(
-        this.client.errorEmbed(i18n.__("errors.noLinksInTheChat"))
+        this.client.errorEmbed(
+          i18n.__({ phrase: "errors.noLinksInTheChat", locale: chat.locale })
+        )
       );
 
     const recipientId =
@@ -90,8 +92,20 @@ class MessageListener extends Listener {
         await this.chatRepository.save(chat);
         await this.userRepository.save(user);
       })
-      .catch((e) => {
-        return this.handleUserNotAvaliable(message, chat);
+      .catch((e: Error) => {
+        if (e.message === "Cannot send messages to this user") {
+          return this.handleUserNotAvaliable(message, chat);
+        } else {
+          this.client.logger.error(e);
+          return message.channel.send(
+            this.client.errorEmbed(
+              i18n.__(
+                { phrase: `errors.unexpectedError`, locale: chat.locale },
+                { name: e.name }
+              )
+            )
+          );
+        }
       });
     await this.client.updateMessageCount();
   }
@@ -100,7 +114,9 @@ class MessageListener extends Listener {
     chat.endedAt = new Date();
     this.chatRepository.save(chat);
     return message.channel.send(
-      this.client.errorEmbed(i18n.__("errors.userNotAvaliable"))
+      this.client.errorEmbed(
+        i18n.__({ phrase: "errors.userNotAvaliable", locale: chat.locale })
+      )
     );
   }
 }
