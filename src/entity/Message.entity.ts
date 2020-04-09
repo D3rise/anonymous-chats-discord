@@ -31,7 +31,7 @@ export class Message {
   @Column("simple-array", { default: [], nullable: true })
   attachmentUris: string[];
 
-  @Column({ type: "timestamp with time zone" })
+  @Column({ type: "timestamp with time zone", nullable: true })
   createdAt: Date;
 
   @ManyToOne(() => Chat, (chat) => chat.messages)
