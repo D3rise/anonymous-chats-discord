@@ -5,7 +5,7 @@ class MessageDeleteListener extends Listener {
   constructor() {
     super("messageDelete", {
       event: "messageDelete",
-      emitter: "client"
+      emitter: "client",
     });
   }
 
@@ -16,17 +16,18 @@ class MessageDeleteListener extends Listener {
     const chat = await this.chatRepository.findOne({
       where: [
         { user1Id: discordId, ended_at: null },
-        { user2Id: discordId, ended_at: null }
-      ]
+        { user2Id: discordId, ended_at: null },
+      ],
     });
     if (!chat) return;
     const recipientId =
       chat.user1Id === discordId ? chat.user2Id : chat.user1Id;
-    const recipient = this.client.users.find(user => user.id === recipientId);
+    const recipient = this.client.users.find((user) => user.id === recipientId);
 
     const msgRecord = await this.messageRepository.findOne({
-      where: { discordId: message.id }
+      where: { discordId: message.id },
     });
+    if (!msgRecord) return;
     const dmMessage = await recipient.dmChannel.messages.fetch(
       msgRecord.sentId
     );
