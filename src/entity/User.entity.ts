@@ -42,6 +42,11 @@ export class User {
   })
   currentSearch: Search;
 
+  // some very secret code...
+  /*
+  @Column({ default: 0 })
+  notActiveCount: number
+  */
   @OneToMany(() => Report, (report) => report.user)
   reports: Report[];
 

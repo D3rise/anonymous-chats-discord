@@ -100,19 +100,29 @@ class SearchCommand extends Command {
 
     message.author
       .send(
-        this.client.successEmbed(
-          __("commands.search.searchHasBeenStarted", {
-            count: String((await this.searchRepository.count()) - 1),
-            prefferedGender: __(
-              avaliableGenders.find(
-                (gender) => gender.id === this.user.config.preferredGender
-              ).name
-            ),
-            searchOnlyOverGuild: this.user.config.guild
-              ? message.guild.name
-              : __(`other.no`),
-          })
-        )
+        this.client
+          .successEmbed(
+            __("commands.search.searchHasBeenStarted", {
+              count: String((await this.searchRepository.count()) - 1),
+              prefferedGender: __(
+                avaliableGenders.find(
+                  (gender) => gender.id === this.user.config.preferredGender
+                ).name
+              ),
+              searchOnlyOverGuild: this.user.config.guild
+                ? message.guild.name
+                : __(`other.no`),
+            })
+          )
+          .setFooter(
+            this.user.config.guild
+              ? ""
+              : __("other.ifYouWantGuildSearch", {
+                  command: `${this.client.options.defaultPrefix}config 3 ${__(
+                    "other.yes"
+                  ).toLowerCase()}`,
+                })
+          )
       )
       .catch(handleMessageError);
 

@@ -80,6 +80,7 @@ class MessageListener extends Listener {
           discordAuthorId: message.author.id,
           discordId: message.id,
           sentId: msg.id,
+          chat,
           content: message.content,
           attachmentUris,
           createdAt: new Date(),

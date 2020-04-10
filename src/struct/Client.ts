@@ -25,6 +25,7 @@ import { Chat } from "../entity/Chat.entity";
 import * as config from "../config.json";
 import i18n, { __ } from "i18n";
 import { Search } from "../entity/Search.entity";
+import { User } from "../entity/User.entity";
 dotenv.config();
 
 interface ICustomClientOptions {
@@ -100,6 +101,7 @@ class CustomClient extends AkairoClient {
 
     setInterval(async () => {
       const chatRepository = getRepository(Chat);
+      const userRepository = getRepository(User);
 
       const expiredChats = await chatRepository
         .createQueryBuilder("chat")
@@ -125,9 +127,47 @@ class CustomClient extends AkairoClient {
           );
           const user = await this.users.fetch(userId);
           user.send(embed).catch((e: DiscordAPIError) => {
-            if (e.name === "Cannot send messages to this user")
+            if (e.message === "Cannot send messages to this user")
               return this.logger.error(`Cannot send messages to ${userId}`);
           });
+          // some very secret code...
+          /*
+          const userRecord = await userRepository.findOne({
+            relations: ["message"],
+            where: { userId },
+          });
+          const userMessagesInChat = userRecord.messages.filter(
+            (message) => message.chat === chat
+          );
+          if (userMessagesInChat.length === 0) {
+            userRecord.notActiveCount += 1;
+
+            if (userRecord.notActiveCount > 7) {
+              userRecord.banned = true;
+              user
+                .send(
+                  this.errorEmbed(
+                    i18n.__(
+                      {
+                        phrase:
+                          "errors.youBannedWeThinkYouAreNotSendingMessages",
+                        locale: userRecord.locale,
+                      },
+                      {
+                        serverInvite: `https://discord.gg/${this.options.contactServerInvite}`,
+                      }
+                    )
+                  )
+                )
+                .catch((e: DiscordAPIError) => {
+                  if (e.message === "Cannot send messages to this user")
+                    return this.logger.error(
+                      `Cannot send messages to ${userId}`
+                    );
+                });
+            }
+          }
+          */
         });
       });
 
