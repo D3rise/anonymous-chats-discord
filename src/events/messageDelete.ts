@@ -23,6 +23,7 @@ class MessageDeleteListener extends Listener {
     const recipientId =
       chat.user1Id === discordId ? chat.user2Id : chat.user1Id;
     const recipient = this.client.users.find((user) => user.id === recipientId);
+    if (!recipient) return;
 
     const msgRecord = await this.messageRepository.findOne({
       where: { discordId: message.id },
