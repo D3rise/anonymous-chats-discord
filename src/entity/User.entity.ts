@@ -22,13 +22,12 @@ export class User {
   userId: string;
 
   @Column("jsonb", {
-    default: { gender: "none", preferredGender: "none", guild: false },
+    default: { gender: "none", preferredGender: "none" },
   })
   config: {
     [key: string]: any;
     gender: string;
     preferredGender: string;
-    guild: boolean;
   };
 
   @Column({ default: false })

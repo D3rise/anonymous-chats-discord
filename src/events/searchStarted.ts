@@ -27,10 +27,12 @@ class SearchStartedListener extends Listener {
       });
     }
 
-    if (author.config.guild) {
+    if (search.guildId) {
       searchQuery.andWhere("search.guildId = :guildId", {
         guildId: search.guildId,
       });
+    } else {
+      searchQuery.andWhere("search.guildId IS NULL");
     }
     const matchedSearch = await searchQuery.getOne();
 

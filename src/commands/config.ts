@@ -12,13 +12,13 @@ class ConfigCommand extends Command {
         {
           id: "option",
           description: "commands.config.args.option.desc",
-          type: "number"
+          type: "number",
         },
         {
           id: "newValue",
-          description: "commands.config.args.newValue.desc"
-        }
-      ]
+          description: "commands.config.args.newValue.desc",
+        },
+      ],
     });
   }
 
@@ -33,55 +33,39 @@ class ConfigCommand extends Command {
       {
         id: 1,
         db: "gender",
-        name: __("commands.config.genderOption")
+        name: __("commands.config.genderOption"),
       },
       {
         id: 2,
         db: "preferredGender",
-        name: __("commands.config.prefferedGender")
+        name: __("commands.config.prefferedGender"),
       },
-      {
-        id: 3,
-        db: "guild",
-        name: __("commands.config.guild")
-      }
     ];
 
     const avaliableGenders = [
       {
         id: "male",
-        name: __("other.maleGender")
+        name: __("other.maleGender"),
       },
       {
         id: "female",
-        name: __("other.femaleGender")
+        name: __("other.femaleGender"),
       },
       {
         id: "none",
-        name: __("other.noneGender")
-      }
-    ];
-
-    const avaliableBoolean = [
-      {
-        id: false,
-        name: __("other.no")
+        name: __("other.noneGender"),
       },
-      {
-        id: true,
-        name: __("other.yes")
-      }
     ];
 
     if (!args.option) {
       let optionsList = "\n";
-      avaliableOptions.forEach(opt => {
+      avaliableOptions.forEach((opt) => {
         // opt is option
         optionsList +=
           __("commands.config.optionField", {
             name: opt.name,
             id: String(opt.id),
-            value: __(this.client.humanizeSetting(this.user.config[opt.db]))
+            value: __(this.client.humanizeSetting(this.user.config[opt.db])),
           }) + "\n";
       });
 
@@ -91,14 +75,14 @@ class ConfigCommand extends Command {
         )
         .setFooter(
           __("commands.config.howToSetNewValue", {
-            prefix
+            prefix,
           })
         );
       return message.channel.send(optionListEmbed);
     }
 
     const option = avaliableOptions.find(
-      avaliableOption => avaliableOption.id === args.option
+      (avaliableOption) => avaliableOption.id === args.option
     );
     if (!option) {
       return message.channel.send(
@@ -119,7 +103,7 @@ class ConfigCommand extends Command {
         );
 
         newValue = avaliableGenders.find(
-          avaliableGender =>
+          (avaliableGender) =>
             avaliableGender.name.toLowerCase() === args.newValue.toLowerCase()
         );
         if (!newValue)
@@ -127,19 +111,6 @@ class ConfigCommand extends Command {
             this.client.errorEmbed(__("errors.noSuchGender"))
           );
         break;
-      }
-      case 3: {
-        const errorEmbed = this.client.errorEmbed(
-          __("errors.noSuchGuildSearchBoolean")
-        );
-        if (!args.newValue) {
-          return message.channel.send(errorEmbed);
-        }
-        newValue = avaliableBoolean.find(
-          aBool => aBool.name.toLowerCase() === args.newValue.toLowerCase()
-        ); // aBool is avaliableBoolean
-
-        if (!newValue) return message.channel.send(errorEmbed);
       }
     }
 
@@ -149,7 +120,7 @@ class ConfigCommand extends Command {
     const embed = this.client.successEmbed(
       __("commands.config.valueHasChanged", {
         option: option.name,
-        value: newValue.name
+        value: newValue.name,
       })
     );
     return message.channel.send(embed);

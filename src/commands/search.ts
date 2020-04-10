@@ -39,9 +39,13 @@ class SearchCommand extends Command {
 
     if (message.guild !== null) {
       if (!this.guild.config.guildSearch && this.user.config.guild) {
-        return message.channel.send(
-          this.client.errorEmbed(__("errors.searchOverThisGuildAreNotAllowed"))
-        );
+        return message.channel
+          .send(
+            this.client.errorEmbed(
+              __("errors.searchOverThisGuildAreNotAllowed")
+            )
+          )
+          .catch(handleMessageError);
       }
 
       message.delete({
@@ -76,16 +80,6 @@ class SearchCommand extends Command {
         .catch(handleMessageError);
     }
 
-    if (this.user.config.guild && !message.guild) {
-      return message.channel.send(
-        this.client.errorEmbed(
-          __("errors.guildSearchUnavaliableChangeTheSetting", {
-            prefix: this.client.options.defaultPrefix,
-          })
-        )
-      );
-    }
-
     userSearchRecord = this.searchRepository.create({
       discordUserId: message.author.id,
       startedAt: new Date(),
@@ -100,29 +94,29 @@ class SearchCommand extends Command {
 
     message.author
       .send(
-        this.client
-          .successEmbed(
-            __("commands.search.searchHasBeenStarted", {
-              count: String((await this.searchRepository.count()) - 1),
-              prefferedGender: __(
-                avaliableGenders.find(
-                  (gender) => gender.id === this.user.config.preferredGender
-                ).name
-              ),
-              searchOnlyOverGuild: this.user.config.guild
+        this.client.successEmbed(
+          __("commands.search.searchHasBeenStarted", {
+            count: String((await this.searchRepository.count()) - 1),
+            prefferedGender: __(
+              avaliableGenders.find(
+                (gender) => gender.id === this.user.config.preferredGender
+              ).name
+            ),
+            searchOnlyOverGuild:
+              message.channel.type !== "dm"
                 ? message.guild.name
                 : __(`other.no`),
-            })
-          )
-          .setFooter(
-            this.user.config.guild
-              ? ""
-              : __("other.ifYouWantGuildSearch", {
-                  command: `${this.client.options.defaultPrefix}config 3 ${__(
-                    "other.yes"
-                  ).toLowerCase()}`,
-                })
-          )
+          }) +
+            `\n${
+              message.channel.type === "dm"
+                ? __("other.ifYouWantGuildSearch", {
+                    prefix: this.client.options.defaultPrefix,
+                  })
+                : __("other.ifYouWantGlobalSearch", {
+                    prefix: this.client.options.defaultPrefix,
+                  })
+            }`
+        )
       )
       .catch(handleMessageError);
 
