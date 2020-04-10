@@ -1,11 +1,12 @@
 import Command from "../struct/Command";
 import { MessageEmbed, Message } from "discord.js";
 import i18n, { __ } from "i18n";
+import path from "path";
 
 class InfoCommand extends Command {
   constructor() {
     super("info", {
-      aliases: ["stats", "info"],
+      aliases: ["info", "stats"],
       category: "categories.bot",
       description: "commands.info.desc",
     });
@@ -13,15 +14,40 @@ class InfoCommand extends Command {
 
   async exec(message: Message) {
     const dialogueCount = await this.chatRepository.find({ endedAt: null });
+    const packageFile = require(path.join(
+      __dirname,
+      "..",
+      "..",
+      "package.json"
+    ));
 
     return message.channel.send(
-      new MessageEmbed()
-        .setAuthor(
-          __("commands.info.stats"),
-          this.client.user.displayAvatarURL()
-        )
+      this.client
+        .embed({
+          title: __("commands.invite.embedTitle"),
+          description:
+            __("commands.invite.embedDescription", {
+              botId: this.client.user.id,
+              devSite: this.client.options.devSite,
+              patreonId: this.client.options.patreonId,
+              supportServer: this.client.options.contactServerInvite,
+            }) +
+            "\n\n" +
+            __("other.voteMessage", { botId: this.client.user.id }),
+          author: {
+            icon_url: this.client.user.displayAvatarURL(),
+            name: __("other.anonymousChat"),
+          },
+          footer: {
+            text: __("commands.invite.embedFooter", {
+              version: packageFile.version,
+            }),
+          },
+          color: "#2e3136",
+        })
         .addField(__("commands.info.users"), this.client.users.size, true)
         .addField(__("commands.info.guilds"), this.client.guilds.size, true)
+        .addField(__("commands.info.channels"), this.client.channels.size, true)
         .addField(
           __("commands.info.dialogues"),
           await this.chatRepository.count(),
@@ -42,10 +68,22 @@ class InfoCommand extends Command {
           this.client.shard.ids[0] + 1,
           true
         )
-        .setDescription(
-          __(`commands.info.inviteMeToYourServer`, {
-            botId: this.client.user.id,
-          })
+        .addField(
+          __("commands.info.owner"),
+          this.client.users.find((u) => u.id === this.client.ownerID).tag,
+          true
+        )
+        .addField(__("commands.info.nodejs"), process.version, true)
+        .addField(
+          __("commands.info.discordjs"),
+          packageFile.dependencies["discord.js"],
+          true
+        )
+        .addField(__("commands.info.license"), packageFile.license, true)
+        .addField(
+          __("commands.info.repository"),
+          `[Github](${packageFile.repository.url})`,
+          true
         )
     );
   }

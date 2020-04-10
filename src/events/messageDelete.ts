@@ -28,9 +28,10 @@ class MessageDeleteListener extends Listener {
       where: { discordId: message.id },
     });
     if (!msgRecord) return;
-    const dmMessage = await recipient.dmChannel.messages.fetch(
-      msgRecord.sentId
-    );
+
+    const dmChannel = recipient.dmChannel;
+    if (!dmChannel) return;
+    const dmMessage = await dmChannel.messages.fetch(msgRecord.sentId);
     dmMessage.delete();
   }
 }

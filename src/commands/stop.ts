@@ -9,7 +9,7 @@ class StopCommand extends Command {
       description: "commands.stop.desc",
       category: "categories.chat",
       prefix: "!",
-      channel: "dm"
+      channel: "dm",
     });
   }
 
@@ -22,14 +22,20 @@ class StopCommand extends Command {
       );
 
     const embed = this.client.successEmbed(
-      __("commands.stop.broHasCancelledTheChat")
+      __("commands.stop.broHasCancelledTheChat") +
+        "\n\n" +
+        __("other.voteMessage", { botId: this.client.user.id })
     );
     if (chat.user1Id === message.author.id) {
-      const user: User = this.client.users.find(usr => usr.id === chat.user2Id);
+      const user: User = this.client.users.find(
+        (usr) => usr.id === chat.user2Id
+      );
       user.dmChannel.stopTyping(true);
       user.send(embed);
     } else {
-      const user: User = this.client.users.find(usr => usr.id === chat.user1Id);
+      const user: User = this.client.users.find(
+        (usr) => usr.id === chat.user1Id
+      );
       user.dmChannel.stopTyping();
       user.send(embed);
     }
@@ -39,7 +45,11 @@ class StopCommand extends Command {
 
     this.client.updateChatCount();
     return message.channel.send(
-      this.client.successEmbed(__("commands.stop.chatIsOver"))
+      this.client.successEmbed(
+        __("commands.stop.chatIsOver") +
+          "\n\n" +
+          __("other.voteMessage", { botId: this.client.user.id })
+      )
     );
   }
 }
