@@ -108,7 +108,6 @@ class MessageListener extends Listener {
           );
         }
       });
-    await this.client.updateMessageCount();
   }
 
   async handleUserNotAvaliable(message: Message, chat: Chat) {
