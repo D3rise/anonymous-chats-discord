@@ -42,7 +42,7 @@
   "commands.help.countOfCommands": "Amount of commands: {{cmds}}",
   "commands.help.description": "Description",
   "commands.help.category": "Category",
-  "commands.help.avaliableOnlyInsideDM": "Avaliable **only** in DM",
+  "commands.help.canBeUsedOnGuild": "Can be used in guild",
   "commands.help.args": "Arguments",
   "commands.help.argsFormat": "Argument list formatted like this: `<index>. <name>(* - required or not) - <description>`\nArguments that are required marked with an asterisk (`*`)",
   "commands.help.commandName": "Command",

@@ -42,7 +42,7 @@
   "commands.help.countOfCommands": "Количество команд: {{cmds}}",
   "commands.help.description": "Описание",
   "commands.help.category": "Категория",
-  "commands.help.avaliableOnlyInsideDM": "Доступно **только** в ЛС",
+  "commands.help.canBeUsedOnGuild": "Можно использовать на сервере",
   "commands.help.args": "Аргументы",
   "commands.help.argsFormat": "Список аргументов выглядит так: `<номер>. <название> - <описание>`\nНеобходимые аргументы помечены звездочкой (`*`)",
   "commands.help.commandName": "Команда",

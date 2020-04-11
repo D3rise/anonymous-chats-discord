@@ -87,8 +87,8 @@ class HelpCommand extends Command {
         );
       }
       embed.addField(
-        `> ${__("commands.help.avaliableOnlyInsideDM")}`,
-        command.channel === "dm" ? __("other.yes") : __("other.no"),
+        `> ${__("commands.help.canBeUsedOnGuild")}`,
+        command.channel === "dm" ? __("other.no") : __("other.yes"),
         true
       );
 
