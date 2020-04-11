@@ -43,7 +43,6 @@ class CustomClient extends AkairoClient {
 
   public logger: log4js.Logger;
   public db: Connection;
-  public contactServerInvite: string;
 
   public commandHandler: CommandHandler;
   private listenerHandler: ListenerHandler;

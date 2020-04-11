@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/shardingManager.js",
-    "dev": "NODE_ENV=dev ts-nodemon"
+    "dev": "ts-nodemon"
   },
   "repository": {
     "url": "https://github.com/D3rise/anonymous-chats-discord"

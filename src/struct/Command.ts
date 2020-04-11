@@ -1,4 +1,6 @@
-import { Command, CommandOptions } from "discord-akairo";
+import { Command, ArgumentGenerator } from "discord-akairo";
+import ArgumentOptions from "./ArgumentOptions";
+import CommandOptions from "./CommandOptions";
 import { Repository, getRepository } from "typeorm";
 import { Guild } from "../entity/Guild.entity";
 import { Search } from "../entity/Search.entity";
@@ -16,6 +18,8 @@ class CustomCommand extends Command {
   chatRepository: Repository<Chat>;
   userRepository: Repository<User>;
   reportRepository: Repository<Report>;
+  args: ArgumentOptions[];
+  categoryName: string;
   user: User;
   guild: Guild;
   chat: Chat;
@@ -23,6 +27,8 @@ class CustomCommand extends Command {
 
   constructor(id: string, options?: CommandOptions) {
     super(id, options);
+    this.args = options.args;
+    this.categoryName = options.category;
     this.guildRepository = getRepository(Guild);
     this.searchRepository = getRepository(Search);
     this.chatRepository = getRepository(Chat);
@@ -32,7 +38,7 @@ class CustomCommand extends Command {
 
   async before(message: Message) {
     this.user = await this.userRepository.findOne({
-      userId: message.author.id
+      userId: message.author.id,
     });
     i18n.setLocale(this.user.locale);
 
@@ -40,13 +46,13 @@ class CustomCommand extends Command {
       where: [
         {
           user1Id: this.user.userId,
-          endedAt: null
+          endedAt: null,
         },
         {
           user2Id: this.user.userId,
-          endedAt: null
-        }
-      ]
+          endedAt: null,
+        },
+      ],
     });
 
     if (this.chat) {
@@ -56,7 +62,7 @@ class CustomCommand extends Command {
 
     if (message.guild) {
       this.guild = await this.guildRepository.findOne({
-        where: { discordId: message.guild.id }
+        where: { discordId: message.guild.id },
       });
     }
   }

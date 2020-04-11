@@ -14,7 +14,18 @@ class StopCommand extends Command {
   }
 
   async exec(message: Message) {
-    const chat = this.chat;
+    const chat = await this.chatRepository.findOne({
+      where: [
+        {
+          user1Id: message.author.id,
+          endedAt: null,
+        },
+        {
+          user2Id: message.author.id,
+          endedAt: null,
+        },
+      ],
+    });
 
     if (!chat)
       return message.channel.send(

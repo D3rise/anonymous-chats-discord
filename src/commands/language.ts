@@ -11,9 +11,9 @@ class LanguageCommand extends Command {
       args: [
         {
           id: "newLocale",
-          description: "commands.language.args.newLocale.desc"
-        }
-      ]
+          description: "commands.language.args.newLocale.desc",
+        },
+      ],
     });
   }
 
@@ -27,7 +27,7 @@ class LanguageCommand extends Command {
         this.client.successEmbed(
           __("commands.language.currentLanguage", {
             language,
-            languages
+            languages,
           })
         )
       );
@@ -38,7 +38,7 @@ class LanguageCommand extends Command {
       return message.channel.send(
         this.client.errorEmbed(
           __("commands.language.thisLanguageDoesNotExistPleaseUseOneOfThose", {
-            languages
+            languages,
           })
         )
       );

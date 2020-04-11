@@ -9,7 +9,7 @@ class BanInhibitor extends Inhibitor {
 
   constructor() {
     super("banned", {
-      reason: __("inhibitors.ban.banReason")
+      reason: __("inhibitors.ban.banReason"),
     });
 
     this.userRepository = getRepository(User);
@@ -17,7 +17,7 @@ class BanInhibitor extends Inhibitor {
 
   async exec(message: Message) {
     const user = await this.userRepository.findOne({
-      userId: message.author.id
+      userId: message.author.id,
     });
     if (user.banned) {
       message.channel.send(
@@ -25,7 +25,7 @@ class BanInhibitor extends Inhibitor {
           __(
             { phrase: "errors.banned", locale: user.locale },
             {
-              contactServerInvite: this.client.contactServerInvite
+              contactServerInvite: this.client.options.contactServerInvite,
             }
           )
         )

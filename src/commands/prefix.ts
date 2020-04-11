@@ -11,16 +11,16 @@ class PrefixCommand extends Command {
       args: [
         {
           id: "newPrefix",
-          description: __("commands.prefix.args.newPrefix.desc")
-        }
+          description: "commands.prefix.args.newPrefix.desc",
+        },
       ],
-      channel: "guild"
+      channel: "guild",
     });
   }
 
   async exec(message: Message, args: any) {
     const guildRecord = await this.guildRepository.findOne({
-      discordId: message.guild.id
+      discordId: message.guild.id,
     });
 
     if (args.newPrefix) {
@@ -37,7 +37,7 @@ class PrefixCommand extends Command {
       return message.channel.send(
         this.client.successEmbed(
           __(`commands.prefix.newPrefixMessage`, {
-            newPrefix: guildRecord.prefix
+            newPrefix: guildRecord.prefix,
           })
         )
       );
@@ -46,7 +46,7 @@ class PrefixCommand extends Command {
     message.channel.send(
       this.client.embed(
         __(`Текущий префикс на этом сервере: \`{{currentPrefix}}\``, {
-          currentPrefix: guildRecord.prefix
+          currentPrefix: guildRecord.prefix,
         })
       )
     );

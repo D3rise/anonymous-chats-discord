@@ -9,17 +9,12 @@ class ReportCommand extends Command {
       prefix: "!",
       description: "commands.report.desc",
       category: "categories.chat",
-      channel: "dm"
+      channel: "dm",
     });
   }
 
   async exec(message: Message) {
-    const chat = await this.chatRepository.findOne({
-      where: [
-        { user1Id: message.author.id, ended_at: null },
-        { user2Id: message.author.id, ended_at: null }
-      ]
-    });
+    const chat = this.chat;
 
     if (!chat)
       return message.channel.send(
@@ -28,15 +23,15 @@ class ReportCommand extends Command {
 
     const reportedUser = await this.userRepository.findOne({
       where: {
-        user_id:
-          chat.user1Id === message.author.id ? chat.user2Id : chat.user1Id
+        userId:
+          chat.user1Id === message.author.id ? chat.user2Id : chat.user1Id,
       },
-      relations: ["reports"]
+      relations: ["reports"],
     });
 
     const reportInChat = await this.reportRepository.findOne({
       chat,
-      authorDiscordId: message.author.id
+      authorDiscordId: message.author.id,
     });
     if (reportInChat) {
       return message.channel.send(
@@ -48,7 +43,7 @@ class ReportCommand extends Command {
       user: reportedUser,
       chat,
       authorDiscordId: message.author.id,
-      date: new Date()
+      date: new Date(),
     });
     reportedUser.reports.push(report);
 
@@ -76,7 +71,7 @@ class ReportCommand extends Command {
       reportedUserDiscord.send(
         this.client.errorEmbed(
           __("errors.banned", {
-            contactServerInvite: this.client.contactServerInvite
+            contactServerInvite: this.client.options.contactServerInvite,
           })
         )
       );
