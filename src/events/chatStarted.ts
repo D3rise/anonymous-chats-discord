@@ -10,7 +10,6 @@ class ChatStartedListener extends Listener {
   }
 
   async exec(chat: Chat) {
-    await this.client.updateChatCount();
     this.client.logger.debug(`Started new chat with id ${chat.id}`);
   }
 }

@@ -32,7 +32,7 @@
   "errors.theseOptionAreNotAvaliable": "There is no setting with this number!",
   "errors.youAlreadyVotedForDeanon": "You have already voted for deanon!",
   "errors.chatTimeout": "The chat was terminated due to lack of activity for 5 minutes.",
-  "errors.searchTimeout": "Unfortunately, the interlocutor was not found for 15 minutes.\nTo start the search again, write `n!search`",
+  "errors.searchTimeout": "Unfortunately, the interlocutor was not found for 5 minutes.\nTo start the search again, write `n!search`",
   "inhibitors.ban.banReason": "ban",
   "commands.help.desc": "Get a list of commands",
   "commands.help.args.command.desc": "The command you want to get a detailed description of",

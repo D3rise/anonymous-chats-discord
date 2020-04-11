@@ -5,7 +5,7 @@ class TypingStartListener extends Listener {
   constructor() {
     super("typingStart", {
       event: "typingStart",
-      emitter: "client"
+      emitter: "client",
     });
   }
 
@@ -16,18 +16,18 @@ class TypingStartListener extends Listener {
       where: [
         {
           user1Id: user.id,
-          endedAt: null
+          endedAt: null,
         },
         {
           user2Id: user.id,
-          endedAt: null
-        }
-      ]
+          endedAt: null,
+        },
+      ],
     });
     if (!chat) return;
 
     const recipientId = user.id === chat.user1Id ? chat.user2Id : chat.user1Id;
-    const recipient = await this.client.users.find(u => u.id === recipientId);
+    const recipient = await this.client.users.fetch(recipientId);
     const dmChannel = recipient.dmChannel;
     dmChannel.startTyping();
 

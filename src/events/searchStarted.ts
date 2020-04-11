@@ -13,12 +13,38 @@ class SearchStartedListener extends Listener {
   }
 
   async exec(user: User, author: UserEntity, search: Search) {
+    const recentlyChats = await this.chatRepository
+      .createQueryBuilder("chat")
+      .where(
+        `(user1_id = :id AND age(current_timestamp, ended_at) < interval '5 minutes')`,
+        { id: user.id }
+      )
+      .orWhere(
+        `(user2_id = :id AND age(current_timestamp, ended_at) < interval '5 minutes')`,
+        { id: user.id }
+      )
+      .getMany();
+
+    const recentlyInterlocutors: string[] = [];
+    recentlyChats.forEach((chat) => {
+      let interlocutorId: string;
+      chat.user1Id === user.id
+        ? (interlocutorId = chat.user2Id)
+        : (interlocutorId = chat.user1Id);
+      recentlyInterlocutors.push(interlocutorId);
+    });
+    recentlyInterlocutors.push(user.id);
+
     const searchQuery = this.searchRepository
       .createQueryBuilder("search")
       .leftJoinAndSelect("search.user", "user")
       .orderBy("search.started_at")
       .where("user.locale = :locale", { locale: author.locale })
-      .andWhere("search.discord_user_id != :userId", { userId: user.id });
+      .andWhere(
+        `search.discord_user_id NOT IN ('${recentlyInterlocutors.join(
+          "', '"
+        )}')`
+      );
 
     this.client.logger.debug(`Started new search with id ${search.id}`);
     if (author.config.preferredGender !== "none") {
@@ -34,7 +60,9 @@ class SearchStartedListener extends Listener {
     } else {
       searchQuery.andWhere("search.guildId IS NULL");
     }
-    const matchedSearch = await searchQuery.getOne();
+    const matchedSearches = await searchQuery.getMany();
+    const matchedSearch =
+      matchedSearches[Math.floor(Math.random() * matchedSearches.length)];
 
     // equivalent to matchedSearch !== null && matchedSearch !== undefined
     if (matchedSearch) {

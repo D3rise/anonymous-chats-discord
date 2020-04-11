@@ -6,13 +6,14 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/shardingManager.js",
-    "dev": "ts-nodemon"
+    "dev": "NODE_ENV=dev ts-nodemon"
   },
   "repository": {
     "url": "https://github.com/D3rise/anonymous-chats-discord"
   },
   "dependencies": {
     "@types/i18n": "^0.8.6",
+    "@types/long": "^4.0.1",
     "@types/moment-duration-format": "^2.2.2",
     "@types/moment-timezone": "^0.5.12",
     "@types/mongoose": "^5.7.3",
@@ -24,6 +25,7 @@
     "dotenv": "^8.2.0",
     "i18n": "^0.8.6",
     "log4js": "^6.1.2",
+    "long": "^4.0.0",
     "moment": "^2.24.0",
     "moment-duration-format": "^2.3.2",
     "moment-timezone": "^0.5.28",

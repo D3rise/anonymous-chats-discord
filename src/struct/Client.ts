@@ -10,6 +10,7 @@ import {
   Message,
   MessageEmbedOptions,
   MessageEmbed,
+  Guild as DiscordGuild,
   GuildChannel,
   DiscordAPIError,
 } from "discord.js";
@@ -21,6 +22,7 @@ import path from "path";
 import dotenv from "dotenv";
 import log4js from "log4js";
 import DBL from "dblapi.js";
+import Long from "long";
 import { Chat } from "../entity/Chat.entity";
 import * as config from "../config.json";
 import i18n, { __ } from "i18n";
@@ -101,7 +103,6 @@ class CustomClient extends AkairoClient {
 
     setInterval(async () => {
       const chatRepository = getRepository(Chat);
-      const userRepository = getRepository(User);
 
       const expiredChats = await chatRepository
         .createQueryBuilder("chat")
@@ -175,7 +176,7 @@ class CustomClient extends AkairoClient {
       const expiredSearches: Search[] = await searchRepository
         .createQueryBuilder("search")
         .leftJoinAndSelect("search.user", "user")
-        .where("age(current_timestamp, started_at) > interval '15 minutes'")
+        .where("age(current_timestamp, started_at) > interval '5 minutes'")
         .getMany();
 
       expiredSearches.forEach(async (expiredSearch) => {
@@ -191,8 +192,10 @@ class CustomClient extends AkairoClient {
         searcher.send(embed);
       });
 
-      await this.updateChatCount();
-      await this.updateSearchCount();
+      if (process.env.NODE_ENV !== "dev") {
+        await this.updateChatCount();
+        await this.updateSearchCount();
+      }
 
       this.channels.forEach((channel: any) => {
         if (channel.type !== "dm") return;
@@ -248,15 +251,6 @@ class CustomClient extends AkairoClient {
     return this.embed({ description, color: "#43a047" });
   }
 
-  public async updateMessageCount() {
-    const repository = getRepository(MessageEntity);
-    const count = await repository.count();
-    const channel: any = await this.channels.fetch(
-      config.messagesCountChannelId
-    );
-    channel.setName(config.messagesCountText + count);
-  }
-
   public async updateSearchCount() {
     const repository = getRepository(Search);
     const count = await repository.count();
@@ -279,6 +273,31 @@ class CustomClient extends AkairoClient {
     interlocutorsChannel.setName(
       config.interlocutorsChannelText + countOfInterlocutors
     );
+  }
+
+  public getDefaultChannel(guild: DiscordGuild): GuildChannel {
+    // get "original" default channel
+    if (guild.channels.has(guild.id)) return guild.channels.get(guild.id);
+
+    // Check for a "general" channel, which is often default chat
+    const generalChannel = guild.channels.find(
+      (channel) => channel.name === "general"
+    );
+    if (generalChannel) return generalChannel;
+    // Now we get into the heavy stuff: first channel in order where the bot can speak
+    // hold on to your hats!
+    return guild.channels
+      .filter(
+        (c) =>
+          c.type === "text" &&
+          c.permissionsFor(guild.client.user).has("SEND_MESSAGES")
+      )
+      .sort(
+        (a, b) =>
+          a.position - b.position ||
+          Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
+      )
+      .first();
   }
 
   public humanizeSetting(value: string | boolean) {

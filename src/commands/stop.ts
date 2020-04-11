@@ -27,15 +27,11 @@ class StopCommand extends Command {
         __("other.voteMessage", { botId: this.client.user.id })
     );
     if (chat.user1Id === message.author.id) {
-      const user: User = this.client.users.find(
-        (usr) => usr.id === chat.user2Id
-      );
+      const user: User = await this.client.users.fetch(chat.user2Id);
       user.dmChannel.stopTyping(true);
       user.send(embed);
     } else {
-      const user: User = this.client.users.find(
-        (usr) => usr.id === chat.user1Id
-      );
+      const user: User = await this.client.users.fetch(chat.user1Id);
       user.dmChannel.stopTyping();
       user.send(embed);
     }
@@ -43,7 +39,6 @@ class StopCommand extends Command {
     chat.endedAt = new Date();
     await this.chatRepository.save(chat);
 
-    this.client.updateChatCount();
     return message.channel.send(
       this.client.successEmbed(
         __("commands.stop.chatIsOver") +
