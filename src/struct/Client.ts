@@ -176,7 +176,7 @@ class CustomClient extends AkairoClient {
       const expiredSearches: Search[] = await searchRepository
         .createQueryBuilder("search")
         .leftJoinAndSelect("search.user", "user")
-        .where("age(current_timestamp, started_at) > interval '5 minutes'")
+        .where("age(current_timestamp, started_at) > interval '15 minutes'")
         .getMany();
 
       expiredSearches.forEach(async (expiredSearch) => {
