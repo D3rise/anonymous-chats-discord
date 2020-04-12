@@ -30,7 +30,14 @@ class HelpCommand extends Command {
         : this.client.options.defaultPrefix;
 
     const embed = new MessageEmbed();
-    embed.setDescription(__("commands.help.DMprefixDisclaimer"));
+    embed.setDescription(
+      __("commands.help.DMprefixDisclaimer") +
+        "\n\n" +
+        __("commands.help.botGuide", {
+          prefix,
+          defaultPrefix: this.client.options.defaultPrefix,
+        })
+    );
 
     if (!args.command) {
       embed.setAuthor(
