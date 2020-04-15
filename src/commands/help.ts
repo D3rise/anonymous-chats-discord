@@ -75,6 +75,10 @@ class HelpCommand extends Command {
           categoryName = name;
         });
       });
+      if (!command)
+        return message.channel.send(
+          this.client.errorEmbed(__("errors.noSuchCommand"))
+        );
       embed.setTitle(
         __("commands.help.commandName") + " " + command.aliases[0]
       );

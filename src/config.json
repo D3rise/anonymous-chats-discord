@@ -6,10 +6,10 @@
   "patreonId": "22381631",
   "contactServerInvite": "muNxAMV",
   "contactServerId": "690456206548008970",
-  "searchCountChannel": "672141901562118153",
+  "searchCountChannel": "691585994444767262",
   "searchCountText": "In search: {{searchCount}}",
-  "chatsCountChannel": "672141847220584449",
+  "chatsCountChannel": "691585948076605491",
   "chatsCountText": "Chats: {{chatCount}}",
-  "guildCountChannel": "672145109973729286",
+  "guildCountChannel": "691585916900212766",
   "guildCountText": "Servers: {{guildCount}}"
 }

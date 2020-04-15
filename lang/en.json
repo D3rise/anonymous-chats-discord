@@ -30,6 +30,7 @@
   "errors.noLinksInTheChat": "You can't send links in the chat!",
   "errors.noSuchGender": "There is no such gender!\nSpecify `no`, `female`, or `male`",
   "errors.noSuchGuildSearchBoolean": "Specify `yes` or `no`!",
+  "errors.noSuchCommand": "There is no such command!",
   "errors.functionNotAvaliableInviteBot": "**Unfortunately, this feature will only be available only after the number of bot users exceeds 100,000.**\n\nTo view the current number of users, write the command `n!stats`\nTo get an invitation link for a bot, use the command `{{prefix}}invite`",
   "errors.theseOptionAreNotAvaliable": "There is no setting with this number!",
   "errors.youAlreadyVotedForDeanon": "You have already voted for deanon!",
