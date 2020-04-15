@@ -5,6 +5,7 @@
   "other.timeFormat": "HH [часов], mm [минут], ss [секунд]",
   "other.botStatus": "В поиске: {{searchCount}} / {{prefix}}help / {{prefix}}info",
   "other.anonymousChat": "Анонимные чаты",
+  "other.veryImportant": "**ВАЖНО**",
   "other.maleGender": "Мужской",
   "other.femaleGender": "Женский",
   "other.noneGender": "Скрыт",
