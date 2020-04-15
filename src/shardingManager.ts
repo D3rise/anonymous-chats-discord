@@ -3,7 +3,7 @@ import path from "path";
 try {
   const manager = new ShardingManager(path.join("dist", "bot.js"), {
     totalShards: 1,
-    mode: "process"
+    mode: "process",
   });
 
   manager.spawn();

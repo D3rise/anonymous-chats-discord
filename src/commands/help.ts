@@ -62,7 +62,7 @@ class HelpCommand extends Command {
       embed.setFooter(
         __(`commands.help.countOfCommands`, { cmds: String(cmds) }) +
           " | " +
-          __(`commands.help.howToGetHelpOfCommand`)
+          __(`commands.help.howToGetHelpOfCommand`, { prefix })
       );
       message.channel.send(embed);
     } else {

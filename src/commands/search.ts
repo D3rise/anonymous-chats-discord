@@ -107,7 +107,7 @@ class SearchCommand extends Command {
                 ? message.guild.name
                 : __(`other.no`),
           }) +
-            `\n${
+            `\n${__("other.veryImportant")}\n${
               message.channel.type === "dm"
                 ? __("other.ifYouWantGuildSearch", {
                     prefix: this.client.options.defaultPrefix,

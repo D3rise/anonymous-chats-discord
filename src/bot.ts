@@ -4,7 +4,7 @@ import "reflect-metadata";
 
 const bot = new Client({
   ownerID: config.ownerId,
-  defaultPrefix: config.defaultPrefix
+  defaultPrefix: config.defaultPrefix,
 });
 bot.login(process.env.TOKEN);
 
