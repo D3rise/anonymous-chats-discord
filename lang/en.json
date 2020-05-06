@@ -112,5 +112,5 @@
   "commands.invite.embedFooter": "Version of the bot: {{version}}",
   "commands.configGuild.desc": "Get or change settings of this server",
   "commands.configGuild.guildSearchOptionName": "Search over the server is allowed",
-  "commands.configGuild.howToSetNewValue": "To change the setting, use command {{prefix}}config-guild <number of setting> <new value>"
+  "commands.configGuild.howToSetNewValue": "To change the setting, use command {{prefix}}config-server <number of setting> <new value>"
 }
