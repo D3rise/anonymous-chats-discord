@@ -38,7 +38,7 @@ class SearchCommand extends Command {
       );
 
     if (message.guild !== null) {
-      if (!this.guild.config.guildSearch && this.user.config.guild) {
+      if (!this.guild.config.guildSearch) {
         return message.channel
           .send(
             this.client.errorEmbed(
