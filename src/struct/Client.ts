@@ -158,7 +158,9 @@ class CustomClient extends AkairoClient {
   private async refreshStatus() {
     const prefix = this.options.defaultPrefix;
     const searchRepository = getRepository(Search);
-    const count = await searchRepository.count();
+    const count = await searchRepository.findAndCount({
+      where: { guildId: null },
+    });
     this.user.setActivity({
       name: i18n.__(
         {
@@ -167,7 +169,7 @@ class CustomClient extends AkairoClient {
         },
         {
           guilds: String(this.guilds.size),
-          searchCount: String(count),
+          searchCount: String(count[1]),
           prefix,
         }
       ),

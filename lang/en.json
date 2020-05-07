@@ -3,7 +3,7 @@
   "categories.chat": "Chat",
   "categories.config": "Settings",
   "other.timeFormat": "HH [hour(s)], mm [minute(s)], ss [second(s)]",
-  "other.botStatus": "In search: {{searchCount}} / {{prefix}}help / {{prefix}}info",
+  "other.botStatus": "In global search: {{searchCount}} / {{prefix}}help / {{prefix}}info",
   "other.anonymousChat": "Anonymous Chat",
   "other.veryImportant": "**IMPORTANT**",
   "other.maleGender": "Male",

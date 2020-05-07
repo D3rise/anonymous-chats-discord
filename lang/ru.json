@@ -3,7 +3,7 @@
   "categories.chat": "Чат",
   "categories.config": "Настройки",
   "other.timeFormat": "HH [часов], mm [минут], ss [секунд]",
-  "other.botStatus": "В поиске: {{searchCount}} / {{prefix}}help / {{prefix}}info",
+  "other.botStatus": "В глобальном поиске: {{searchCount}} / {{prefix}}help / {{prefix}}info",
   "other.anonymousChat": "Анонимные чаты",
   "other.veryImportant": "**ВАЖНО**",
   "other.maleGender": "Мужской",

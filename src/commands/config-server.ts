@@ -4,7 +4,7 @@ import { __ } from "i18n";
 
 class ConfigGuildCommand extends Command {
   constructor() {
-    super("config-guild", {
+    super("config-server", {
       aliases: ["config-server"],
       description: "commands.configGuild.desc",
       category: "categories.config",
