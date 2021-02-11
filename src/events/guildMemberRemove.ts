@@ -18,8 +18,8 @@ class GuildMemberRemoveListener extends Listener {
       .getOne();
 
     let cachedUser: GuildMember;
-    this.client.guilds.forEach((guild) => {
-      cachedUser = guild.members.get(member.id);
+    this.client.guilds.cache.forEach((guild) => {
+      cachedUser = guild.members.cache.get(member.id);
     });
 
     if (cachedUser === undefined && search) {

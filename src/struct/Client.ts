@@ -20,7 +20,6 @@ import { Guild } from "../entity/Guild.entity";
 import path from "path";
 import dotenv from "dotenv";
 import log4js from "log4js";
-import DBL from "dblapi.js";
 import Long from "long";
 import { Chat } from "../entity/Chat.entity";
 import * as config from "../config.json";
@@ -44,8 +43,6 @@ class CustomClient extends AkairoClient {
   public listenerHandler: ListenerHandler;
   public inhibitorHandler: InhibitorHandler;
   public startTime: Date;
-
-  private dbl: DBL;
 
   constructor(
     options?: AkairoOptions & ClientOptions & ICustomClientOptions,
@@ -119,21 +116,8 @@ class CustomClient extends AkairoClient {
     this.logger.info("Initialized intervals");
   }
 
-  private initDbl() {
-    if (process.env.DBL_TOKEN) {
-      this.dbl = new DBL(process.env.DBL_TOKEN, this);
-      this.dbl.on("error", (error) => {
-        this.logger.error(`Error while connecting to DBL:\n${error}`);
-      });
-      this.dbl.on("posted", () => {
-        this.logger.info("Successfully posted stats to DBL");
-      });
-      this.logger.info("Initialized DBL");
-    }
-  }
-
   private async stopTyping() {
-    this.channels.forEach((channel: any) => {
+    this.channels.cache.forEach((channel: any) => {
       if (channel.type !== "dm") return;
       channel.stopTyping(true);
     });
@@ -168,7 +152,7 @@ class CustomClient extends AkairoClient {
           locale: this.options.defaultLocale,
         },
         {
-          guilds: String(this.guilds.size),
+          guilds: String(this.guilds.cache.size),
           searchCount: String(count[1]),
           prefix,
         }
@@ -269,7 +253,6 @@ class CustomClient extends AkairoClient {
     await this.initI18n();
     await this.initDatabase();
     await this.initHandlers();
-    await this.initDbl();
     await this.initIntervals();
   }
 
@@ -329,7 +312,7 @@ class CustomClient extends AkairoClient {
   }
 
   public async updateServerCount() {
-    const guildCount = this.guilds.size;
+    const guildCount = this.guilds.cache.size;
     const guildsChannel: any = await this.channels.fetch(
       config.guildCountChannel
     );
@@ -345,23 +328,23 @@ class CustomClient extends AkairoClient {
 
   public getDefaultChannel(guild: DiscordGuild): GuildChannel {
     // get "original" default channel
-    if (guild.channels.has(guild.id)) return guild.channels.get(guild.id);
+    if (guild.channels.cache.has(guild.id)) return guild.channels.cache.get(guild.id);
 
     // Check for a "general" channel, which is often default chat
-    const generalChannel = guild.channels.find(
-      (channel) => channel.name === "general"
+    const generalChannel = guild.channels.cache.find(
+      (channel: GuildChannel) => channel.name === "general"
     );
     if (generalChannel) return generalChannel;
     // Now we get into the heavy stuff: first channel in order where the bot can speak
     // hold on to your hats!
-    return guild.channels
+    return guild.channels.cache
       .filter(
-        (c) =>
+        (c: GuildChannel) =>
           c.type === "text" &&
           c.permissionsFor(guild.client.user).has("SEND_MESSAGES")
       )
       .sort(
-        (a, b) =>
+        (a: GuildChannel, b: GuildChannel) =>
           a.position - b.position ||
           Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
       )

@@ -10,7 +10,7 @@ class GuildDeleteListener extends Listener {
   }
 
   async exec(guild: Guild) {
-    guild.members.forEach(async (member) => {
+    guild.members.cache.forEach(async (member) => {
       const search = await this.searchRepository
         .createQueryBuilder("search")
         .leftJoinAndSelect("search.user", "user")
@@ -18,8 +18,8 @@ class GuildDeleteListener extends Listener {
         .getOne();
 
       let cachedUser: GuildMember;
-      this.client.guilds.forEach((otherGuild) => {
-        cachedUser = otherGuild.members.get(member.id);
+      this.client.guilds.cache.forEach((otherGuild) => {
+        cachedUser = otherGuild.members.cache.get(member.id);
       });
 
       if (cachedUser === undefined && search) {

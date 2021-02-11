@@ -102,7 +102,7 @@ class SearchStartedListener extends Listener {
         )
       );
 
-      this.client.users
+      this.client.users.cache
         .filter((u) => u.id === user.id || u.id === matchedSearch.discordUserId)
         .each((interlocutorUser) => interlocutorUser.send(notificationEmbed));
 

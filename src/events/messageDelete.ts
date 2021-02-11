@@ -1,5 +1,5 @@
 import Listener from "../struct/Listener";
-import { Message } from "discord.js";
+import { Message, User } from "discord.js";
 
 class MessageDeleteListener extends Listener {
   constructor() {
@@ -22,7 +22,7 @@ class MessageDeleteListener extends Listener {
     if (!chat) return;
     const recipientId =
       chat.user1Id === discordId ? chat.user2Id : chat.user1Id;
-    const recipient = this.client.users.find((user) => user.id === recipientId);
+    const recipient = this.client.users.cache.find((user: User) => user.id === recipientId);
     if (!recipient) return;
 
     const msgRecord = await this.messageRepository.findOne({

@@ -15,7 +15,7 @@ class GuildCreateListener extends Listener {
     });
     if (guildRecord) return;
 
-    guild.members.each((member) => {
+    guild.members.cache.each((member) => {
       if (member.user.bot) return;
       this.userRepository.findOne({ userId: member.id }).then((user) => {
         if (!user) {

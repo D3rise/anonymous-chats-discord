@@ -28,7 +28,7 @@ class ReadyListener extends Listener {
       this.client.logger.info("ALL SHARDS INITIALIZED");
     }
 
-    const guilds = this.client.guilds;
+    const guilds = this.client.guilds.cache;
     for (const [guildId, guild] of guilds) {
       this.guildRepository
         .findOne({ discordId: guildId })

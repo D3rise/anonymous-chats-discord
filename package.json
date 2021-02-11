@@ -4,7 +4,7 @@
   "main": "dist/shardingManager.js",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "tsc",
+    "build": "rimraf dist && tsc",
     "start": "node dist/shardingManager.js",
     "dev": "ts-nodemon"
   },
@@ -20,9 +20,8 @@
     "@types/node": "^13.7.7",
     "@types/redis": "^2.8.17",
     "@types/ws": "^7.2.2",
-    "dblapi.js": "^2.4.0",
     "discord-akairo": "^8.0.0",
-    "discord.js": "github:some-packages/discord.js",
+    "discord.js": "12.5.1",
     "dotenv": "^8.2.0",
     "i18n": "^0.8.6",
     "log4js": "^6.1.2",
@@ -33,12 +32,14 @@
     "nohm": "^2.2.3",
     "pg": "^7.18.2",
     "reflect-metadata": "^0.1.13",
+    "topgg-autoposter": "^1.1.6",
     "typeorm": "^0.2.24",
     "typeorm-naming-strategies": "^1.1.0"
   },
   "devDependencies": {
     "@trongnd/ts-nodemon": "^1.0.3",
     "prettier": "2.2.1",
+    "rimraf": "^3.0.2",
     "typescript": "^3.8.3"
   }
 }

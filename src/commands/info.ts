@@ -45,9 +45,9 @@ class InfoCommand extends Command {
           },
           color: "#2e3136",
         })
-        .addField(__("commands.info.users"), this.client.users.size, true)
-        .addField(__("commands.info.guilds"), this.client.guilds.size, true)
-        .addField(__("commands.info.channels"), this.client.channels.size, true)
+        .addField(__("commands.info.users"), this.client.users.cache.size, true)
+        .addField(__("commands.info.guilds"), this.client.guilds.cache.size, true)
+        .addField(__("commands.info.channels"), this.client.channels.cache.size, true)
         .addField(
           __("commands.info.dialogues"),
           await this.chatRepository.count(),
@@ -70,7 +70,7 @@ class InfoCommand extends Command {
         )
         .addField(
           __("commands.info.owner"),
-          this.client.users.find((u) => u.id === this.client.ownerID).tag,
+          this.client.users.cache.find((u) => u.id === this.client.ownerID).tag,
           true
         )
         .addField(__("commands.info.nodejs"), process.version, true)
@@ -90,7 +90,7 @@ class InfoCommand extends Command {
 
   get users() {
     let users = 0;
-    this.client.guilds.each((g) => (users += g.memberCount));
+    this.client.guilds.cache.each((g) => (users += g.memberCount));
     return users;
   }
 }

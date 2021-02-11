@@ -95,13 +95,6 @@ class ConfigCommand extends Command {
     switch (option.id) {
       case 1:
       case 2: {
-        // TODO: REMOVE WHEN USERS COUNT WILL BE MORE THAN 20000
-        return message.channel.send(
-          this.client.errorEmbed(
-            __("errors.functionNotAvaliableInviteBot", { prefix })
-          )
-        );
-
         newValue = avaliableGenders.find(
           (avaliableGender) =>
             avaliableGender.name.toLowerCase() === args.newValue.toLowerCase()
