@@ -7,6 +7,7 @@
 To invite bot to your server, use [this](https://discordapp.com/api/oauth2/authorize?client_id=686634699049009198&permissions=388160&scope=bot) link
 
 ## How does this bot works?
+
 First, you start searching (you can choose where to search - only on this server or globally), and then the bot begins to search for your interlocutor among other users. As soon as the bot finds someone who suits you, you start a chat. The chat goes like this: the person sends a message to the bot in the DM, and it is automatically sent to you. The same thing works the other way around. Also, with the mutual consent of both, you can disclose your nicknames to each other. If you believe that a user behaves inappropriately or violates the chat rules, you can file a complaint against them.  
 _But it's best if you try it yourself!_
 

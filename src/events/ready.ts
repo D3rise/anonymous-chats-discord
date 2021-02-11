@@ -41,18 +41,6 @@ class ReadyListener extends Listener {
             this.client.logger.debug(`Created guild record for ${guildId}`);
           }
         });
-
-      const members = guild.members;
-      for (const [userId, member] of members) {
-        if (member.user.bot) return;
-        const user = await this.userRepository.findOne({ userId });
-        if (!user) {
-          const userRecord = this.userRepository.create({
-            userId,
-          });
-          this.userRepository.save(userRecord);
-        }
-      }
     }
   }
 }

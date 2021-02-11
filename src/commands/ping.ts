@@ -7,7 +7,7 @@ class PingCommand extends Command {
     super("ping", {
       aliases: ["ping"],
       category: "categories.bot",
-      description: "commands.ping.desc"
+      description: "commands.ping.desc",
     });
   }
 
@@ -16,11 +16,11 @@ class PingCommand extends Command {
     const timeDiff = sent.createdAt.getTime() - message.createdAt.getTime();
     return message.channel.send(
       __(`commands.ping.timeForMessage`, {
-        timeDiff: String(timeDiff)
+        timeDiff: String(timeDiff),
       }) +
         "\n" +
         __(`commands.ping.timeForAPI`, {
-          ping: String(Math.round(this.client.ws.ping))
+          ping: String(Math.round(this.client.ws.ping)),
         })
     );
   }

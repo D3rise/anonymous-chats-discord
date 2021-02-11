@@ -9,7 +9,7 @@ class DeanonCommand extends Command {
       category: "categories.chat",
       description: "commands.deanon.desc",
       prefix: "!",
-      channel: "dm"
+      channel: "dm",
     });
   }
 
@@ -42,7 +42,7 @@ class DeanonCommand extends Command {
       user2.send(
         this.client.successEmbed(
           __("commands.deanon.tagOfYourBro", {
-            userTag: message.author.tag
+            userTag: message.author.tag,
           })
         )
       );

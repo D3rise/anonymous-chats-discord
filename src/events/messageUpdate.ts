@@ -8,7 +8,7 @@ class MessageUpdateListener extends Listener {
   constructor() {
     super("messageUpdate", {
       emitter: "client",
-      event: "messageUpdate"
+      event: "messageUpdate",
     });
 
     this.urlRegexp = new RegExp(
@@ -20,9 +20,9 @@ class MessageUpdateListener extends Listener {
     if (oldMessage.guild || oldMessage.author.bot) return; // if message was sent in the guild or author is bot
     const messageRecord = await this.messageRepository.findOne({
       where: {
-        discordId: oldMessage.id
+        discordId: oldMessage.id,
       },
-      relations: ["chat"]
+      relations: ["chat"],
     });
 
     if (messageRecord !== undefined && messageRecord.chat.endedAt === null) {

@@ -21,13 +21,9 @@ export class Search {
   @Column({ nullable: true })
   guildId: string;
 
-  @OneToOne(
-    type => User,
-    user => user.currentSearch,
-    {
-      cascade: false
-    }
-  )
+  @OneToOne((type) => User, (user) => user.currentSearch, {
+    cascade: false,
+  })
   @JoinColumn()
   user: User;
 }
