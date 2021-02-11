@@ -27,7 +27,7 @@ class BanInhibitor extends Inhibitor {
       this.userRepository.save(userRecord);
     }
 
-    if (!message.author.bot && user.banned) {
+    if (!message.author.bot && user && user.banned) {
       message.channel.send(
         this.client.errorEmbed(
           __(
