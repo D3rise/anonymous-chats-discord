@@ -29,7 +29,7 @@ class ReadyListener extends Listener {
     }
 
     const guilds = this.client.guilds.cache;
-    for (const [guildId, guild] of guilds) {
+    for (const [guildId] of guilds) {
       this.guildRepository
         .findOne({ discordId: guildId })
         .then(async (guildRec) => {

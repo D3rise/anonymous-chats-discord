@@ -4,42 +4,47 @@
   "main": "dist/shardingManager.js",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "rimraf ./dist && tsc",
     "start": "node dist/shardingManager.js",
-    "dev": "ts-nodemon"
+    "start:dev": "cross-env NODE_ENV=dev nodemon",
+    "format:check": "prettier --check ./src/**/*",
+    "format": "prettier --write ./src/**/*"
   },
   "repository": {
     "url": "https://github.com/D3rise/anonymous-chats-discord"
   },
   "dependencies": {
-    "@types/i18n": "^0.8.6",
-    "@types/long": "^4.0.1",
-    "@types/moment-duration-format": "^2.2.2",
-    "@types/moment-timezone": "^0.5.12",
-    "@types/mongoose": "^5.7.3",
-    "@types/node": "^13.7.7",
-    "@types/redis": "^2.8.17",
-    "@types/ws": "^7.2.2",
-    "discord-akairo": "^8.0.0",
-    "discord.js": "12.5.1",
-    "dotenv": "^8.2.0",
-    "i18n": "^0.8.6",
-    "log4js": "^6.1.2",
+    "discord-akairo": "^8.1.0",
+    "discord.js": "12.5.3",
+    "dotenv": "^10.0.0",
+    "i18n": "^0.13.3",
+    "log4js": "^6.3.0",
     "long": "^4.0.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",
-    "moment-timezone": "^0.5.28",
+    "moment-timezone": "^0.5.33",
     "nohm": "^2.2.3",
-    "pg": "^7.18.2",
+    "pg": "^8.6.0",
     "reflect-metadata": "^0.1.13",
-    "topgg-autoposter": "^1.1.6",
+    "topgg-autoposter": "^2.0.0",
     "typeorm": "^0.2.24",
-    "typeorm-naming-strategies": "^1.1.0"
+    "typeorm-naming-strategies": "^2.0.0"
   },
   "devDependencies": {
     "@trongnd/ts-nodemon": "^1.0.3",
-    "prettier": "2.2.1",
+    "@types/i18n": "^0.13.0",
+    "@types/long": "^4.0.1",
+    "@types/moment-duration-format": "^2.2.2",
+    "@types/moment-timezone": "^0.5.30",
+    "@types/mongoose": "^5.10.5",
+    "@types/node": "^15.6.1",
+    "@types/redis": "^2.8.28",
+    "@types/ws": "^7.4.4",
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.7",
+    "prettier": "2.3.0",
     "rimraf": "^3.0.2",
-    "typescript": "^3.8.3"
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.2"
   }
 }

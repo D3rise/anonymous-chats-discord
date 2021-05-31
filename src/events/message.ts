@@ -1,10 +1,6 @@
-import { Message, GuildChannel } from "discord.js";
-import Listener from "../struct/Listener";
+import { Message } from "discord.js";
 import { Chat } from "../entity/Chat.entity";
-import { Message as MessageEntity } from "../entity/Message.entity";
-import { Repository, getRepository } from "typeorm";
-import { User } from "../entity/User.entity";
-import config from "../config.json";
+import Listener from "../struct/Listener";
 import i18n from "i18n";
 
 class MessageListener extends Listener {
@@ -22,7 +18,6 @@ class MessageListener extends Listener {
   }
 
   async exec(message: Message) {
-    if (message.author.bot) return;
     if (message.guild !== null) return;
 
     if (

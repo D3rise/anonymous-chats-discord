@@ -25,7 +25,7 @@ export class User {
     default: { gender: "none", preferredGender: "none" },
   })
   config: {
-    [key: string]: any;
+    [key: string]: any; // for IDE completion
     gender: string;
     preferredGender: string;
   };

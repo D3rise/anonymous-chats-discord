@@ -40,6 +40,14 @@ class CustomCommand extends Command {
     this.user = await this.userRepository.findOne({
       userId: message.author.id,
     });
+
+    if (!this.user) {
+      this.user = this.userRepository.create({
+        userId: message.author.id,
+      });
+      await this.userRepository.save(this.user);
+    }
+
     i18n.setLocale(this.user.locale);
 
     this.chat = await this.chatRepository.findOne({

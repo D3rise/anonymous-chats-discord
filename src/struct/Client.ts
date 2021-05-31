@@ -62,7 +62,7 @@ class CustomClient extends AkairoClient {
           layout: {
             type: "pattern",
             pattern: `%[${
-              process.env.NODE_ENV !== "production" ? "%d" : ""
+              process.env.NODE_ENV == "dev" ? "%d" : ""
             } [%p] Shard %x{shard}/%x{shards}:%] %m`,
             tokens: {
               shard: this.shard.ids[0] + 1,
@@ -80,7 +80,9 @@ class CustomClient extends AkairoClient {
       this.padString(` SHARD ${this.shard.ids[0] + 1} INIT STARTED `, 42, "=")
     );
     this.logger.info("Initialized logger");
-    this.init();
+    this.init().then(() => {
+      this.login(process.env.TOKEN);
+    });
   }
 
   private initI18n() {
@@ -100,6 +102,7 @@ class CustomClient extends AkairoClient {
       entities: [path.join(__dirname, "..", "entity", "*.entity.{ts,js}")],
       namingStrategy: new SnakeNamingStrategy(),
     });
+
     await this.db
       .synchronize()
       .then(() => this.logger.info("Initialized database"));
@@ -108,7 +111,9 @@ class CustomClient extends AkairoClient {
   private async initIntervals() {
     setInterval(async () => {
       await this.stopTyping();
-      await this.refreshStatistics();
+      if (process.env.NODE_ENV != "dev") {
+        await this.refreshStatistics();
+      }
       await this.refreshStatus();
       await this.removeExpiredSearches();
       await this.removeExpiredChats();
@@ -328,7 +333,8 @@ class CustomClient extends AkairoClient {
 
   public getDefaultChannel(guild: DiscordGuild): GuildChannel {
     // get "original" default channel
-    if (guild.channels.cache.has(guild.id)) return guild.channels.cache.get(guild.id);
+    if (guild.channels.cache.has(guild.id))
+      return guild.channels.cache.get(guild.id);
 
     // Check for a "general" channel, which is often default chat
     const generalChannel = guild.channels.cache.find(
