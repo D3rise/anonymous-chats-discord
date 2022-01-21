@@ -18,7 +18,7 @@
     "discord.js": "12.5.3",
     "dotenv": "^10.0.0",
     "i18n": "^0.13.3",
-    "log4js": "^6.3.0",
+    "log4js": "^6.4.0",
     "long": "^4.0.0",
     "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",
