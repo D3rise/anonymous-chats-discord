@@ -22,7 +22,7 @@
     "long": "^4.0.0",
     "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",
-    "moment-timezone": "^0.5.33",
+    "moment-timezone": "^0.5.35",
     "nohm": "^2.2.3",
     "pg": "^8.6.0",
     "reflect-metadata": "^0.1.13",
